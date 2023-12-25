@@ -8,7 +8,7 @@ import pytest
 
 from pydantic import ValidationError
 
-from utils.schemes import gate_dict_from_list, ResultDict
+from sqooler.schemes import gate_dict_from_list, ResultDict
 from multiqudit.config import (
     spooler_object as mq_spooler,
     MultiQuditExperiment,

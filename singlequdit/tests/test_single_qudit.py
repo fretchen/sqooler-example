@@ -7,7 +7,7 @@ import pytest
 from pydantic import ValidationError
 import numpy as np
 
-from utils.schemes import ResultDict, gate_dict_from_list
+from sqooler.schemes import ResultDict, gate_dict_from_list
 from singlequdit.config import (
     spooler_object as sq_spooler,
     SingleQuditExperiment,

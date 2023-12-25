@@ -8,7 +8,7 @@ import pytest
 
 from pydantic import ValidationError
 
-from utils.schemes import gate_dict_from_list, ResultDict
+from sqooler.schemes import gate_dict_from_list, ResultDict
 from rydberg.config import (
     spooler_object as ryd_spooler,
     RydbergExperiment,
