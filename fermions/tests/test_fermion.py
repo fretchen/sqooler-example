@@ -8,6 +8,7 @@ import numpy as np
 import pytest
 from pydantic import ValidationError
 
+from sqooler.schemes import gate_dict_from_list, ResultDict
 
 from fermions.config import (
     spooler_object as f_spooler,
@@ -18,8 +19,6 @@ from fermions.config import (
     IntInstruction,
     PhaseInstruction,
 )
-
-from sqooler.schemes import gate_dict_from_list, ResultDict
 
 
 def run_json_circuit(json_dict: dict, job_id: Union[int, str]) -> ResultDict:
