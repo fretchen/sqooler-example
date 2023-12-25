@@ -9,7 +9,7 @@ import regex as re
 
 # import the storage provider that you would like to use
 # currently we have dropbox and mongodb
-from utils.storage_providers import MongodbProvider
+from sqooler.storage_providers import MongodbProvider
 
 from singlequdit.config import spooler_object as sq_spooler
 from multiqudit.config import spooler_object as mq_spooler

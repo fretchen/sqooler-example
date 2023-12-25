@@ -6,7 +6,7 @@ import numpy as np
 from scipy.sparse.linalg import expm
 
 
-from utils.schemes import (
+from sqooler.schemes import (
     ExperimentDict,
     create_memory_data,
 )

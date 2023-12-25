@@ -10,7 +10,7 @@ from typing_extensions import Annotated
 
 from numpy import pi
 
-from utils.schemes import (
+from sqooler.schemes import (
     gate_dict_from_list,
     Spooler,
     GateInstruction,

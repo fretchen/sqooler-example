@@ -10,7 +10,7 @@ from typing_extensions import Annotated
 
 import numpy as np
 
-from utils.schemes import (
+from sqooler.schemes import (
     Spooler,
     gate_dict_from_list,
     GateInstruction,

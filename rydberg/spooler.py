@@ -10,7 +10,7 @@ from scipy.sparse import identity, diags, csc_matrix
 from scipy import sparse
 from scipy.sparse.linalg import expm_multiply
 
-from utils.schemes import (
+from sqooler.schemes import (
     ExperimentDict,
     create_memory_data,
 )

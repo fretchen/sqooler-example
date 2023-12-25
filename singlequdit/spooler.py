@@ -8,7 +8,7 @@ import numpy as np
 from scipy.sparse.linalg import expm_multiply
 from scipy.sparse import diags, csc_matrix
 
-from utils.schemes import (
+from sqooler.schemes import (
     ExperimentDict,
     create_memory_data,
 )
