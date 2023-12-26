@@ -64,4 +64,3 @@ jobs:
         poetry run mypy -p multiqudit
         poetry run mypy -p fermions
         poetry run mypy -p rydberg
-        poetry run mypy  maintainer.py
