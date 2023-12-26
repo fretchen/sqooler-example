@@ -6,11 +6,12 @@ import os
 import shutil
 import traceback
 import regex as re
+from decouple import config
 
 # import the storage provider that you would like to use
 # currently we have dropbox and mongodb
 from sqooler.storage_providers import MongodbProvider
-
+from sqooler.schemes import MongodbLoginInformation
 from singlequdit.config import spooler_object as sq_spooler
 from multiqudit.config import spooler_object as mq_spooler
 from fermions.config import spooler_object as f_spooler
@@ -25,7 +26,17 @@ backends = {
 }
 
 # configure the storage provider
-storage_provider = MongodbProvider()
+
+mongodb_username = config("MONGODB_USERNAME")
+mongodb_password = config("MONGODB_PASSWORD")
+mongodb_database_url = config("MONGODB_DATABASE_URL")
+login_dict = {
+    "mongodb_username": mongodb_username,
+    "mongodb_password": mongodb_password,
+    "mongodb_database_url": mongodb_database_url,
+}
+mongodb_login = MongodbLoginInformation(**login_dict)
+storage_provider = MongodbProvider(mongodb_login)
 
 
 def new_files_exist() -> bool:

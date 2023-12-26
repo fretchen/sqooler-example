@@ -11,6 +11,8 @@ python = "^3.10"
 numpy = "^1.24.3"
 scipy = "^1.11.2"
 sqooler = {git = "https://github.com/fretchen/sqooler.git"}
+regex = "^2023.6.3"
+python-decouple = "^3.6"
 
 
 [tool.poetry.group.dev.dependencies]
