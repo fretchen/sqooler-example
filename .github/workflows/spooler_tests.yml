@@ -55,7 +55,7 @@ jobs:
         poetry run pylint multiqudit
         poetry run pylint singlequdit
         poetry run pylint rydberg
-        poetry run mypy pylint.py
+        poetry run pylint maintainer.py
     - name: Run black
       run: |
         poetry run black --check .
