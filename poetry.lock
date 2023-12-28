@@ -969,7 +969,7 @@ name = "sqooler"
 version = "0.3.0"
 description = "Code that enables cloud access to quantum hardware (simulators)"
 optional = false
-python-versions = "^3.9"
+python-versions = "^3.10"
 files = []
 develop = false
 
@@ -977,13 +977,14 @@ develop = false
 dropbox = "^10.10.0"
 pydantic = "^2.3.0"
 pymongo = "^4.3.3"
+regex = "^2023.6.3"
 setuptools = "^69.0.3"
 
 [package.source]
 type = "git"
-url = "https://github.com/fretchen/sqooler.git"
+url = "https://github.com/Alqor-UG/sqooler.git"
 reference = "HEAD"
-resolved_reference = "24d1b066e8d7b7bc93234052edfb6ccf33454a96"
+resolved_reference = "9bb427470b33c2a0dfd50d4d9d3052b397e8861d"
 
 [[package]]
 name = "tomli"
@@ -1037,4 +1038,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "a4ec0bea2535ac173d5e7e9bca1edf54d0157e6f351b25f2e8c04fda6e8b1ca3"
+content-hash = "178170ebdd3a8197328e18f2337fc31fa21d6c7fdd6e6767a4e89fef54725876"
