@@ -11,7 +11,7 @@ python = "^3.10"
 numpy = "^1.24.3"
 scipy = "^1.11.2"
 python-decouple = "^3.6"
-sqooler = {git = "https://github.com/Alqor-UG/sqooler.git"}
+sqooler = {git = "https://github.com/Alqor-UG/sqooler.git", rev = "v0.3.0"}
 
 
 [tool.poetry.group.dev.dependencies]
@@ -19,6 +19,7 @@ pytest = "^7.4.3"
 mypy = "^1.8.0"
 black = "^23.12.1"
 pylint = "^3.0.3"
+pre-commit = "^3.6.0"
 
 [build-system]
 requires = ["poetry-core"]
