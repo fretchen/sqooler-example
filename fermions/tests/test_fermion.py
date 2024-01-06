@@ -21,7 +21,7 @@ from fermions.config import (
 )
 
 
-def run_json_circuit(json_dict: dict, job_id: Union[int, str]) -> ResultDict:
+def run_json_circuit(json_dict: dict, job_id: str) -> ResultDict:
     """
     A support function that executes the job.
 
@@ -294,7 +294,7 @@ def test_wire_order() -> None:
         },
     }
 
-    job_id = 1
+    job_id = "1"
 
     with pytest.raises(AssertionError):
         dummy = run_json_circuit(job_payload, job_id)
@@ -324,8 +324,8 @@ def test_load_gate() -> None:
     job_id = "1"
     data = run_json_circuit(job_payload, job_id)
 
-    shots_array = data["results"][0]["data"]["memory"]
-    assert data["job_id"] == job_id, "job_id got messed up"
+    shots_array = data.results[0]["data"]["memory"]
+    assert data.job_id == job_id, "job_id got messed up"
     assert len(shots_array) > 0, "shots_array got messed up"
     assert shots_array[0] == "1 0 1", "shots_array got messed up"
 
@@ -356,8 +356,8 @@ def test_hop_gate() -> None:
     job_id = "1"
     data = run_json_circuit(job_payload, job_id)
 
-    shots_array = data["results"][0]["data"]["memory"]
-    assert data["job_id"] == job_id, "job_id got messed up"
+    shots_array = data.results[0]["data"]["memory"]
+    assert data.job_id == job_id, "job_id got messed up"
     assert len(shots_array) > 0, "shots_array got messed up"
     assert shots_array[0] == "0 1 0 1", "shots_array got messed up"
 
@@ -384,10 +384,10 @@ def test_number_experiments() -> None:
             "wire_order": "interleaved",
         },
     }
-    job_id = 1
+    job_id = "1"
     data = run_json_circuit(job_payload, job_id)
 
-    shots_array = data["results"][0]["data"]["memory"]
+    shots_array = data.results[0]["data"]["memory"]
     assert len(shots_array) > 0, "shots_array got messed up"
     inst_dict = {
         "instructions": [
@@ -409,7 +409,7 @@ def test_number_experiments() -> None:
     job_payload = {}
     for ii in range(n_exp):
         job_payload[f"experiment_{ii}"] = inst_dict
-    job_id = 1
+    job_id = "1"
     with pytest.raises(AssertionError):
         data = run_json_circuit(job_payload, job_id)
 
@@ -439,8 +439,8 @@ def test_phase_gate() -> None:
     job_id = "1"
     data = run_json_circuit(job_payload, job_id)
 
-    shots_array = data["results"][0]["data"]["memory"]
-    assert data["job_id"] == job_id, "job_id got messed up"
+    shots_array = data.results[0]["data"]["memory"]
+    assert data.job_id == job_id, "job_id got messed up"
     assert len(shots_array) > 0, "shots_array got messed up"
     assert shots_array[0] == "0 1", "shots_array got messed up"
 
@@ -497,9 +497,9 @@ def test_seed() -> None:
     job_id = "1"
     data = run_json_circuit(job_payload, job_id)
 
-    shots_array_1 = data["results"][0]["data"]["memory"]
-    shots_array_2 = data["results"][1]["data"]["memory"]
-    assert data["job_id"] == job_id, "job_id got messed up"
+    shots_array_1 = data.results[0]["data"]["memory"]
+    shots_array_2 = data.results[1]["data"]["memory"]
+    assert data.job_id == job_id, "job_id got messed up"
     assert len(shots_array_1) > 0, "shots_array got messed up"
     assert shots_array_1 == shots_array_2, "seed got messed up"
 
@@ -565,9 +565,13 @@ def test_spooler_config() -> None:
         "num_wires": 8,
         "wire_order": "interleaved",
         "num_species": 2,
+        "display_name": "",
+        "operational": True,
+        "pending_jobs": None,
+        "status_msg": None,
     }
-    spooler_config_dict = f_spooler.get_configuration()
-    assert spooler_config_dict == fermion_config_dict
+    spooler_config_info = f_spooler.get_configuration()
+    assert spooler_config_info.model_dump() == fermion_config_dict
 
 
 def test_add_job() -> None:
@@ -592,7 +596,7 @@ def test_add_job() -> None:
         },
     }
 
-    job_id = 1
+    job_id = "1"
     status_msg_dict = {
         "job_id": job_id,
         "status": "None",
@@ -602,7 +606,7 @@ def test_add_job() -> None:
     result_dict, status_msg_dict = f_spooler.add_job(job_payload, status_msg_dict)
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "0 1"
-    for element in result_dict["results"][0]["data"]["memory"]:
+    for element in result_dict.results[0]["data"]["memory"]:
         assert (
             element == expected_value
         ), f"Element {element} is not equal to {expected_value}"
