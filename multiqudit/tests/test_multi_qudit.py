@@ -2,13 +2,12 @@
 Test module for the spooler_multiqudit.py file.
 """
 
-from typing import Union
 import numpy as np
 import pytest
 
 from pydantic import ValidationError
 
-from sqooler.schemes import gate_dict_from_list, ResultDict
+from sqooler.schemes import gate_dict_from_list
 from multiqudit.config import (
     spooler_object as mq_spooler,
     MultiQuditExperiment,
@@ -517,7 +516,9 @@ def test_add_job() -> None:
     result_dict, status_msg_dict = mq_spooler.add_job(job_payload, status_msg_dict)
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "1"
-    for element in result_dict.results[0]["data"]["memory"]:
+    for element in result_dict.results[0][  # pylint: disable=unsubscriptable-object
+        "data"
+    ]["memory"]:
         assert (
             element == expected_value
         ), f"Element {element} is not equal to {expected_value}"

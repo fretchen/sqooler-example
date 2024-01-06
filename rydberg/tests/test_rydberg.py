@@ -2,7 +2,6 @@
 Test module for the rydberg simulator.
 """
 
-from typing import Union
 import numpy as np
 import pytest
 
@@ -552,7 +551,9 @@ def test_add_job() -> None:
     result_dict, status_msg_dict = ryd_spooler.add_job(job_payload, status_msg_dict)
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "1 0"
-    for element in result_dict.results[0]["data"]["memory"]:
+    for element in result_dict.results[0][  # pylint: disable=unsubscriptable-object
+        "data"
+    ]["memory"]:
         assert (
             element == expected_value
         ), f"Element {element} is not equal to {expected_value}"
