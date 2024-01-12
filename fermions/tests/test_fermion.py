@@ -578,7 +578,9 @@ def test_add_job() -> None:
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "0 1"
     ic(result_dict)
-    for element in result_dict.results[0].data["memory"]:
+    for element in result_dict.results[  # pylint: disable=unsubscriptable-object
+        0
+    ].data["memory"]:
         assert (
             element == expected_value
         ), f"Element {element} is not equal to {expected_value}"
