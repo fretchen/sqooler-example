@@ -4,10 +4,11 @@ Test module for the spooler_fermion.py file.
 
 import numpy as np
 
+from icecream import ic
 import pytest
 from pydantic import ValidationError
 
-from sqooler.schemes import gate_dict_from_list
+from sqooler.schemes import gate_dict_from_list, StatusMsgDict
 
 from fermions.config import (
     spooler_object as f_spooler,
@@ -31,15 +32,16 @@ def run_json_circuit(json_dict: dict, job_id: str) -> dict:
     Returns:
         the results dict
     """
-    status_msg_dict = {
+    status_msg_draft = {
         "job_id": job_id,
         "status": "None",
         "detail": "None",
         "error_message": "None",
     }
+    status_msg_dict = StatusMsgDict(**status_msg_draft)
 
     result_dict, status_msg_dict = f_spooler.add_job(json_dict, status_msg_dict)
-    assert status_msg_dict["status"] == "DONE", "Job failed"
+    assert status_msg_dict.status == "DONE", "Job failed"
     return result_dict.model_dump()
 
 
@@ -596,18 +598,18 @@ def test_add_job() -> None:
     }
 
     job_id = "1"
-    status_msg_dict = {
+    status_msg_draft = {
         "job_id": job_id,
         "status": "None",
         "detail": "None",
         "error_message": "None",
     }
+    status_msg_dict = StatusMsgDict(**status_msg_draft)
     result_dict, status_msg_dict = f_spooler.add_job(job_payload, status_msg_dict)
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "0 1"
-    for element in result_dict.results[0][  # pylint: disable=unsubscriptable-object
-        "data"
-    ]["memory"]:
+    ic(result_dict)
+    for element in result_dict.results[0].data["memory"]:
         assert (
             element == expected_value
         ), f"Element {element} is not equal to {expected_value}"
