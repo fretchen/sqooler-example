@@ -9,7 +9,7 @@ import pytest
 from pydantic import ValidationError
 
 from sqooler.schemes import gate_dict_from_list, StatusMsgDict
-
+from sqooler.utils import run_json_circuit
 from fermions.config import (
     spooler_object as f_spooler,
     FermionExperiment,
@@ -19,37 +19,6 @@ from fermions.config import (
     IntInstruction,
     PhaseInstruction,
 )
-
-
-def run_json_circuit(json_dict: dict, job_id: str) -> dict:
-    """
-    A support function that executes the job.
-
-    Args:
-        json_dict: the job dict that will be treated
-        job_id: the number of the job
-
-    Returns:
-        the results dict
-    """
-    status_msg_draft = {
-        "job_id": job_id,
-        "status": "None",
-        "detail": "None",
-        "error_message": "None",
-    }
-    status_msg_dict = StatusMsgDict(**status_msg_draft)
-
-    result_dict, status_msg_dict = f_spooler.add_job(json_dict, status_msg_dict)
-    assert status_msg_dict.status == "DONE", "Job failed"
-    return result_dict.model_dump()
-
-
-###########################
-###########################
-# __Put all tests below__#
-###########################
-###########################
 
 
 def test_pydantic_exp_validation() -> None:
@@ -298,7 +267,7 @@ def test_wire_order() -> None:
     job_id = "1"
 
     with pytest.raises(AssertionError):
-        dummy = run_json_circuit(job_payload, job_id)
+        dummy = run_json_circuit(job_payload, job_id, f_spooler)
 
 
 def test_load_gate() -> None:
@@ -323,7 +292,7 @@ def test_load_gate() -> None:
     }
 
     job_id = "1"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, f_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert data["job_id"] == job_id, "job_id got messed up"
@@ -355,7 +324,7 @@ def test_hop_gate() -> None:
     }
 
     job_id = "1"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, f_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert data["job_id"] == job_id, "job_id got messed up"
@@ -386,7 +355,7 @@ def test_number_experiments() -> None:
         },
     }
     job_id = "1"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, f_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert len(shots_array) > 0, "shots_array got messed up"
@@ -412,7 +381,7 @@ def test_number_experiments() -> None:
         job_payload[f"experiment_{ii}"] = inst_dict
     job_id = "1"
     with pytest.raises(AssertionError):
-        data = run_json_circuit(job_payload, job_id)
+        data = run_json_circuit(job_payload, job_id, f_spooler)
 
 
 def test_phase_gate() -> None:
@@ -438,7 +407,7 @@ def test_phase_gate() -> None:
     }
 
     job_id = "1"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, f_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert data["job_id"] == job_id, "job_id got messed up"
@@ -496,7 +465,7 @@ def test_seed() -> None:
     }
 
     job_id = "1"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, f_spooler)
 
     shots_array_1 = data["results"][0]["data"]["memory"]
     shots_array_2 = data["results"][1]["data"]["memory"]

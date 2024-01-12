@@ -1203,7 +1203,7 @@ setuptools = "^69.0.3"
 type = "git"
 url = "https://github.com/Alqor-UG/sqooler.git"
 reference = "HEAD"
-resolved_reference = "1069e75b3d01325602fc03f0f71a80c0c79a7d8e"
+resolved_reference = "94dfaea44c221646e5f4dd6271d039230c043624"
 
 [[package]]
 name = "stone"

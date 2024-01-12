@@ -8,10 +8,8 @@ import numpy as np
 from scipy.sparse.linalg import expm_multiply
 from scipy.sparse import diags, csc_matrix
 
-from sqooler.schemes import (
-    ExperimentDict,
-    create_memory_data,
-)
+from sqooler.schemes import ExperimentDict
+from sqooler.utils import create_memory_data
 
 
 def gen_circuit(json_dict: dict) -> ExperimentDict:
