@@ -13,7 +13,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: ['3.9', '3.12']
+        python-version: ['3.10', '3.12']
         os: ["ubuntu-latest", "macOS-latest", "windows-latest"]
     steps:
       - name: Print Concurrency Group
@@ -55,6 +55,7 @@ jobs:
         poetry run pylint multiqudit
         poetry run pylint singlequdit
         poetry run pylint rydberg
+        poetry run pylint maintainer.py
     - name: Run black
       run: |
         poetry run black --check .
@@ -64,3 +65,4 @@ jobs:
         poetry run mypy -p multiqudit
         poetry run mypy -p fermions
         poetry run mypy -p rydberg
+        poetry run mypy maintainer.py

@@ -2,13 +2,13 @@
 Test module for the rydberg simulator.
 """
 
-from typing import Union
 import numpy as np
 import pytest
 
 from pydantic import ValidationError
 
-from sqooler.schemes import gate_dict_from_list, ResultDict
+from sqooler.schemes import StatusMsgDict, gate_dict_from_list
+from sqooler.utils import run_json_circuit
 from rydberg.config import (
     spooler_object as ryd_spooler,
     RydbergExperiment,
@@ -17,36 +17,6 @@ from rydberg.config import (
     RydbergBlockInstruction,
     RydbergFullInstruction,
 )
-
-
-def run_json_circuit(json_dict: dict, job_id: Union[int, str]) -> ResultDict:
-    """
-    A support function that executes the job.
-
-    Args:
-        json_dict: the job dict that will be treated
-        job_id: the number of the job
-
-    Returns:
-        the results dict
-    """
-    status_msg_dict = {
-        "job_id": job_id,
-        "status": "None",
-        "detail": "None",
-        "error_message": "None",
-    }
-
-    result_dict, status_msg_dict = ryd_spooler.add_job(json_dict, status_msg_dict)
-    assert status_msg_dict["status"] == "DONE", "Job failed"
-    return result_dict
-
-
-###########################
-###########################
-# __Put all tests below__#
-###########################
-###########################
 
 
 def test_pydantic_exp_validation() -> None:
@@ -142,7 +112,7 @@ def test_local_rot_instruction() -> None:
     }
 
     job_id = "2"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, ryd_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert shots_array[0] == "1 0", "job_id got messed up"
@@ -166,7 +136,7 @@ def test_local_rot_instruction() -> None:
     }
 
     job_id = "2"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, ryd_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert shots_array[0] == "0 0", "job_id got messed up"
@@ -243,7 +213,7 @@ def test_blockade_instruction() -> None:
     }
 
     job_id = "2"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, ryd_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert shots_array[0] == "1 1", "job_id got messed up"
@@ -306,7 +276,7 @@ def test_rydberg_full_instruction() -> None:
     }
 
     job_id = "2"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, ryd_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert shots_array[0] == "1 1", "job_id got messed up"
@@ -340,7 +310,7 @@ def test_z_gate() -> None:
     }
 
     job_id = "1"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, ryd_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert data["job_id"] == job_id, "job_id got messed up"
@@ -376,7 +346,7 @@ def test_barrier_gate() -> None:
     }
 
     job_id = "1"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, ryd_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert data["job_id"] == job_id, "job_id got messed up"
@@ -402,7 +372,7 @@ def test_measure_gate() -> None:
     }
 
     job_id = "1"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, ryd_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert data["job_id"] == job_id, "job_id got messed up"
@@ -467,9 +437,13 @@ def test_spooler_config() -> None:
         "num_wires": 5,
         "wire_order": "interleaved",
         "num_species": 1,
+        "display_name": "",
+        "operational": True,
+        "pending_jobs": None,
+        "status_msg": None,
     }
-    spooler_config_dict = ryd_spooler.get_configuration()
-    assert spooler_config_dict == mq_config_dict
+    spooler_config_info = ryd_spooler.get_configuration()
+    assert spooler_config_info.model_dump() == mq_config_dict
 
 
 def test_number_experiments() -> None:
@@ -491,8 +465,8 @@ def test_number_experiments() -> None:
             "wire_order": "sequential",
         }
     }
-    job_id = 1
-    data = run_json_circuit(job_payload, job_id)
+    job_id = "1"
+    data = run_json_circuit(job_payload, job_id, ryd_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert len(shots_array) > 0, "shots_array got messed up"
@@ -513,9 +487,9 @@ def test_number_experiments() -> None:
     job_payload = {}
     for ii in range(n_exp):
         job_payload[f"experiment_{ii}"] = inst_dict
-    job_id = 1
+    job_id = "1"
     with pytest.raises(AssertionError):
-        data = run_json_circuit(job_payload, job_id)
+        data = run_json_circuit(job_payload, job_id, ryd_spooler)
 
 
 def test_add_job() -> None:
@@ -538,17 +512,21 @@ def test_add_job() -> None:
         }
     }
 
-    job_id = 1
-    status_msg_dict = {
+    job_id = "1"
+    status_msg_draft = {
         "job_id": job_id,
         "status": "None",
         "detail": "None",
         "error_message": "None",
     }
+
+    status_msg_dict = StatusMsgDict(**status_msg_draft)
     result_dict, status_msg_dict = ryd_spooler.add_job(job_payload, status_msg_dict)
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "1 0"
-    for element in result_dict["results"][0]["data"]["memory"]:
+    for element in result_dict.results[  # pylint: disable=unsubscriptable-object
+        0
+    ].data["memory"]:
         assert (
             element == expected_value
         ), f"Element {element} is not equal to {expected_value}"

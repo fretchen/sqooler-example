@@ -2,14 +2,14 @@
 Test module for the spooler_fermion.py file.
 """
 
-from typing import Union
 import numpy as np
 
+from icecream import ic
 import pytest
 from pydantic import ValidationError
 
-from sqooler.schemes import gate_dict_from_list, ResultDict
-
+from sqooler.schemes import gate_dict_from_list, StatusMsgDict
+from sqooler.utils import run_json_circuit
 from fermions.config import (
     spooler_object as f_spooler,
     FermionExperiment,
@@ -19,36 +19,6 @@ from fermions.config import (
     IntInstruction,
     PhaseInstruction,
 )
-
-
-def run_json_circuit(json_dict: dict, job_id: Union[int, str]) -> ResultDict:
-    """
-    A support function that executes the job.
-
-    Args:
-        json_dict: the job dict that will be treated
-        job_id: the number of the job
-
-    Returns:
-        the results dict
-    """
-    status_msg_dict = {
-        "job_id": job_id,
-        "status": "None",
-        "detail": "None",
-        "error_message": "None",
-    }
-
-    result_dict, status_msg_dict = f_spooler.add_job(json_dict, status_msg_dict)
-    assert status_msg_dict["status"] == "DONE", "Job failed"
-    return result_dict
-
-
-###########################
-###########################
-# __Put all tests below__#
-###########################
-###########################
 
 
 def test_pydantic_exp_validation() -> None:
@@ -294,10 +264,10 @@ def test_wire_order() -> None:
         },
     }
 
-    job_id = 1
+    job_id = "1"
 
     with pytest.raises(AssertionError):
-        dummy = run_json_circuit(job_payload, job_id)
+        dummy = run_json_circuit(job_payload, job_id, f_spooler)
 
 
 def test_load_gate() -> None:
@@ -322,7 +292,7 @@ def test_load_gate() -> None:
     }
 
     job_id = "1"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, f_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert data["job_id"] == job_id, "job_id got messed up"
@@ -354,7 +324,7 @@ def test_hop_gate() -> None:
     }
 
     job_id = "1"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, f_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert data["job_id"] == job_id, "job_id got messed up"
@@ -384,8 +354,8 @@ def test_number_experiments() -> None:
             "wire_order": "interleaved",
         },
     }
-    job_id = 1
-    data = run_json_circuit(job_payload, job_id)
+    job_id = "1"
+    data = run_json_circuit(job_payload, job_id, f_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert len(shots_array) > 0, "shots_array got messed up"
@@ -409,9 +379,9 @@ def test_number_experiments() -> None:
     job_payload = {}
     for ii in range(n_exp):
         job_payload[f"experiment_{ii}"] = inst_dict
-    job_id = 1
+    job_id = "1"
     with pytest.raises(AssertionError):
-        data = run_json_circuit(job_payload, job_id)
+        data = run_json_circuit(job_payload, job_id, f_spooler)
 
 
 def test_phase_gate() -> None:
@@ -437,7 +407,7 @@ def test_phase_gate() -> None:
     }
 
     job_id = "1"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, f_spooler)
 
     shots_array = data["results"][0]["data"]["memory"]
     assert data["job_id"] == job_id, "job_id got messed up"
@@ -495,7 +465,7 @@ def test_seed() -> None:
     }
 
     job_id = "1"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, f_spooler)
 
     shots_array_1 = data["results"][0]["data"]["memory"]
     shots_array_2 = data["results"][1]["data"]["memory"]
@@ -565,9 +535,13 @@ def test_spooler_config() -> None:
         "num_wires": 8,
         "wire_order": "interleaved",
         "num_species": 2,
+        "display_name": "",
+        "operational": True,
+        "pending_jobs": None,
+        "status_msg": None,
     }
-    spooler_config_dict = f_spooler.get_configuration()
-    assert spooler_config_dict == fermion_config_dict
+    spooler_config_info = f_spooler.get_configuration()
+    assert spooler_config_info.model_dump() == fermion_config_dict
 
 
 def test_add_job() -> None:
@@ -592,17 +566,21 @@ def test_add_job() -> None:
         },
     }
 
-    job_id = 1
-    status_msg_dict = {
+    job_id = "1"
+    status_msg_draft = {
         "job_id": job_id,
         "status": "None",
         "detail": "None",
         "error_message": "None",
     }
+    status_msg_dict = StatusMsgDict(**status_msg_draft)
     result_dict, status_msg_dict = f_spooler.add_job(job_payload, status_msg_dict)
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "0 1"
-    for element in result_dict["results"][0]["data"]["memory"]:
+    ic(result_dict)
+    for element in result_dict.results[  # pylint: disable=unsubscriptable-object
+        0
+    ].data["memory"]:
         assert (
             element == expected_value
         ), f"Element {element} is not equal to {expected_value}"

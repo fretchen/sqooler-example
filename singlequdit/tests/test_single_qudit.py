@@ -2,12 +2,13 @@
 Test module for the spooler_singlequdit.py file.
 """
 
-from typing import Union
 import pytest
 from pydantic import ValidationError
 import numpy as np
 
-from sqooler.schemes import ResultDict, gate_dict_from_list
+from sqooler.schemes import StatusMsgDict, gate_dict_from_list
+from sqooler.utils import run_json_circuit
+
 from singlequdit.config import (
     spooler_object as sq_spooler,
     SingleQuditExperiment,
@@ -17,36 +18,6 @@ from singlequdit.config import (
     RlzInstruction,
     RlxInstruction,
 )
-
-
-def run_json_circuit(json_dict: dict, job_id: Union[int, str]) -> ResultDict:
-    """
-    A support function that executes the job.
-
-    Args:
-        json_dict: the job dict that will be treated
-        job_id: the number of the job
-
-    Returns:
-        the results dict
-    """
-    status_msg_dict = {
-        "job_id": job_id,
-        "status": "None",
-        "detail": "None",
-        "error_message": "None",
-    }
-
-    result_dict, status_msg_dict = sq_spooler.add_job(json_dict, status_msg_dict)
-    assert status_msg_dict["status"] == "DONE", "Job failed"
-    return result_dict
-
-
-###########################
-###########################
-# __Put all tests below__#
-###########################
-###########################
 
 
 def test_pydantic_exp_validation() -> None:
@@ -323,9 +294,11 @@ def test_z_gate() -> None:
     }
 
     job_id = "1"
-    data = run_json_circuit(job_payload, job_id)
+    data = run_json_circuit(job_payload, job_id, sq_spooler)
 
-    shots_array = data["results"][0]["data"]["memory"]
+    shots_array = data["results"][0]["data"][  # pylint: disable=unsubscriptable-object
+        "memory"
+    ]
     assert data["job_id"] == job_id, "job_id got messed up"
     assert len(shots_array) > 0, "shots_array got messed up"
 
@@ -379,9 +352,13 @@ def test_spooler_config() -> None:
         "num_wires": 1,
         "wire_order": "interleaved",
         "num_species": 1,
+        "display_name": "",
+        "operational": True,
+        "pending_jobs": None,
+        "status_msg": None,
     }
-    spooler_config_dict = sq_spooler.get_configuration()
-    assert spooler_config_dict == sq_config_dict
+    spooler_config_info = sq_spooler.get_configuration()
+    assert spooler_config_info.model_dump() == sq_config_dict
 
 
 def test_number_experiments() -> None:
@@ -401,10 +378,12 @@ def test_number_experiments() -> None:
         "wire_order": "sequential",
     }
     job_payload = {"experiment_0": inst_dict}
-    job_id = 1
-    data = run_json_circuit(job_payload, job_id)
+    job_id = "1"
+    data = run_json_circuit(job_payload, job_id, sq_spooler)
 
-    shots_array = data["results"][0]["data"]["memory"]
+    shots_array = data["results"][0]["data"][  # pylint: disable=unsubscriptable-object
+        "memory"
+    ]
     assert len(shots_array) > 0, "shots_array got messed up"
 
     # and now run too many experiments
@@ -412,9 +391,9 @@ def test_number_experiments() -> None:
     job_payload = {}
     for ii in range(n_exp):
         job_payload[f"experiment_{ii}"] = inst_dict
-    job_id = 1
+    job_id = "1"
     with pytest.raises(AssertionError):
-        data = run_json_circuit(job_payload, job_id)
+        data = run_json_circuit(job_payload, job_id, sq_spooler)
 
 
 def test_add_job() -> None:
@@ -435,17 +414,21 @@ def test_add_job() -> None:
         }
     }
 
-    job_id = 1
-    status_msg_dict = {
+    job_id = "1"
+    status_msg_draft = {
         "job_id": job_id,
         "status": "None",
         "detail": "None",
         "error_message": "None",
     }
+
+    status_msg_dict = StatusMsgDict(**status_msg_draft)
     result_dict, status_msg_dict = sq_spooler.add_job(job_payload, status_msg_dict)
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "1"
-    for element in result_dict["results"][0]["data"]["memory"]:
+    for element in result_dict.results[  # pylint: disable=unsubscriptable-object
+        0
+    ].data["memory"]:
         assert (
             element == expected_value
         ), f"Element {element} is not equal to {expected_value}"
