@@ -9,10 +9,8 @@ from scipy.sparse import identity, diags, csc_matrix
 from scipy import sparse
 from scipy.sparse.linalg import expm_multiply
 
-from sqooler.schemes import (
-    ExperimentDict,
-    create_memory_data,
-)
+from sqooler.utils import create_memory_data
+from sqooler.schemes import ExperimentDict
 
 
 def op_at_wire(op: csc_matrix, pos: int, dim_per_wire: List[int]) -> csc_matrix:
