@@ -56,40 +56,35 @@ def test_local_rot_instruction() -> None:
     """
     inst_list = ["rlx", [0], [0.7]]
     gate_dict = gate_dict_from_list(inst_list)
-    assert gate_dict == {
-        "name": inst_list[0],
-        "wires": inst_list[1],
-        "params": inst_list[2],
-    }
-    RlxInstruction(**gate_dict)
+    RlxInstruction(**gate_dict.model_dump())
 
     inst_list = ["rlz", [0], [0.7]]
     gate_dict = gate_dict_from_list(inst_list)
-    RlzInstruction(**gate_dict)
+    RlzInstruction(**gate_dict.model_dump())
 
     # test that the name is nicely fixed
     with pytest.raises(ValidationError):
         poor_inst_list = ["rly", [0], [0.7]]
         gate_dict = gate_dict_from_list(poor_inst_list)
-        RlxInstruction(**gate_dict)
+        RlxInstruction(**gate_dict.model_dump())
 
     # test that we cannot give too many wires
     with pytest.raises(ValidationError):
         poor_inst_list = ["rlx", [0, 1], [0.7]]
         gate_dict = gate_dict_from_list(poor_inst_list)
-        RlxInstruction(**gate_dict)
+        RlxInstruction(**gate_dict.model_dump())
 
     # make sure that the wires cannot be above the limit
     with pytest.raises(ValidationError):
         poor_inst_list = ["rlx", [200], [0.7]]
         gate_dict = gate_dict_from_list(poor_inst_list)
-        RlxInstruction(**gate_dict)
+        RlxInstruction(**gate_dict.model_dump())
 
     # make sure that the parameters are enforced to be within the limits
     with pytest.raises(ValidationError):
         poor_inst_list = ["rlx", [0], [3 * np.pi]]
         gate_dict = gate_dict_from_list(poor_inst_list)
-        RlxInstruction(**gate_dict)
+        RlxInstruction(**gate_dict.model_dump())
 
     inst_config = {
         "name": "rlx",
@@ -107,36 +102,31 @@ def test_squeezing_instruction() -> None:
     """
     inst_list = ["rlz2", [0], [0.7]]
     gate_dict = gate_dict_from_list(inst_list)
-    assert gate_dict == {
-        "name": inst_list[0],
-        "wires": inst_list[1],
-        "params": inst_list[2],
-    }
-    LocalSqueezingInstruction(**gate_dict)
+    LocalSqueezingInstruction(**gate_dict.model_dump())
 
     # test that the name is nicely fixed
     with pytest.raises(ValidationError):
         poor_inst_list = ["rlz22", [0], [0.7]]
         gate_dict = gate_dict_from_list(poor_inst_list)
-        LocalSqueezingInstruction(**gate_dict)
+        LocalSqueezingInstruction(**gate_dict.model_dump())
 
     # test that we cannot give too many wires
     with pytest.raises(ValidationError):
         poor_inst_list = ["rlz2", [0, 1], [0.7]]
         gate_dict = gate_dict_from_list(poor_inst_list)
-        LocalSqueezingInstruction(**gate_dict)
+        LocalSqueezingInstruction(**gate_dict.model_dump())
 
     # make sure that the wires cannot be above the limit
     with pytest.raises(ValidationError):
         poor_inst_list = ["rlz2", [200], [0.7]]
         gate_dict = gate_dict_from_list(poor_inst_list)
-        LocalSqueezingInstruction(**gate_dict)
+        LocalSqueezingInstruction(**gate_dict.model_dump())
 
     # make sure that the parameters are enforced to be within the limits
     with pytest.raises(ValidationError):
         poor_inst_list = ["rlz2", [0], [200 * np.pi]]
         gate_dict = gate_dict_from_list(poor_inst_list)
-        LocalSqueezingInstruction(**gate_dict)
+        LocalSqueezingInstruction(**gate_dict.model_dump())
 
     # test the config
     inst_config = {
@@ -155,40 +145,35 @@ def test_qudit_qudit_instruction() -> None:
     """
     inst_list = ["rlxly", [0, 1], [0.7]]
     gate_dict = gate_dict_from_list(inst_list)
-    assert gate_dict == {
-        "name": inst_list[0],
-        "wires": inst_list[1],
-        "params": inst_list[2],
-    }
-    RlxlyInstruction(**gate_dict)
+    RlxlyInstruction(**gate_dict.model_dump())
 
     inst_list = ["rlzlz", [0, 1], [0.7]]
     gate_dict = gate_dict_from_list(inst_list)
-    RlzlzInstruction(**gate_dict)
+    RlzlzInstruction(**gate_dict.model_dump())
 
     # test that the name is nicely fixed
     with pytest.raises(ValidationError):
         poor_inst_list = ["rlzls", [0, 1], [0.7]]
         gate_dict = gate_dict_from_list(poor_inst_list)
-        RlxlyInstruction(**gate_dict)
+        RlxlyInstruction(**gate_dict.model_dump())
 
     # test that we cannot give too few wires
     with pytest.raises(ValidationError):
         poor_inst_list = ["rlxly", [0], [0.7]]
         gate_dict = gate_dict_from_list(poor_inst_list)
-        RlxlyInstruction(**gate_dict)
+        RlxlyInstruction(**gate_dict.model_dump())
 
     # make sure that the wires cannot be above the limit
     with pytest.raises(ValidationError):
         poor_inst_list = ["rlxly", [0, 200], [0.7]]
         gate_dict = gate_dict_from_list(poor_inst_list)
-        RlxlyInstruction(**gate_dict)
+        RlxlyInstruction(**gate_dict.model_dump())
 
     # make sure that the parameters are enforced to be within the limits
     with pytest.raises(ValidationError):
         poor_inst_list = ["rlxly", [0, 1], [200 * np.pi]]
         gate_dict = gate_dict_from_list(poor_inst_list)
-        RlxlyInstruction(**gate_dict)
+        RlxlyInstruction(**gate_dict.model_dump())
 
     inst_config = {
         "name": "rlxly",
