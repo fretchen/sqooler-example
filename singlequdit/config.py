@@ -4,8 +4,8 @@ In this module we define all the configuration parameters for the singlequdit pa
 No simulation is performed here. The entire logic is implemented in the `spooler.py` module.
 """
 
-from typing import Tuple, Literal, List, Optional
-from pydantic import Field, BaseModel, ValidationError
+from typing import Literal, List, Optional
+from pydantic import Field, BaseModel
 from typing_extensions import Annotated
 
 import numpy as np

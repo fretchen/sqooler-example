@@ -5,7 +5,7 @@ No simulation is performed here. The entire logic is implemented in the `spooler
 """
 
 from typing import List, Tuple, Literal, Optional
-from pydantic import Field, BaseModel, ValidationError
+from pydantic import Field, BaseModel
 from typing_extensions import Annotated
 
 from numpy import pi
