@@ -12,7 +12,6 @@ import numpy as np
 
 from sqooler.schemes import (
     Spooler,
-    gate_dict_from_list,
     GateInstruction,
 )
 
