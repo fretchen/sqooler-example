@@ -160,24 +160,8 @@ class SingleQuditExperiment(BaseModel):
     seed: Optional[int] = None
 
 
-class SingleQuditSpooler(Spooler):
-    """
-    The spooler class that handles all the circuit logic.
-    """
-
-    def check_experiment(self, exper_dict: dict) -> Tuple[str, bool]:
-        """
-        Check the validity of the experiment.
-        """
-        try:
-            SingleQuditExperiment(**exper_dict)
-            return "", True
-        except ValidationError as err:
-            return str(err), False
-
-
 # This is the spooler object that is used by the main function.
-spooler_object = SingleQuditSpooler(
+spooler_object = Spooler(
     ins_schema_dict={
         "rlx": RlxInstruction,
         "rlz": RlzInstruction,
@@ -186,6 +170,7 @@ spooler_object = SingleQuditSpooler(
         "measure": MeasureBarrierInstruction,
         "load": LoadInstruction,
     },
+    device_config=SingleQuditExperiment,
     n_wires=1,
     version="0.2",
     description="Setup of a cold atomic gas experiment with a single qudit.",

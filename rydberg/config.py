@@ -191,23 +191,7 @@ class RydbergExperiment(BaseModel):
     seed: Optional[int] = None
 
 
-class RydbergSpooler(Spooler):
-    """
-    The sppoler class that handles all the circuit logic.
-    """
-
-    def check_experiment(self, exper_dict: dict) -> Tuple[str, bool]:
-        """
-        Check the validity of the experiment.
-        """
-        try:
-            RydbergExperiment(**exper_dict)
-            return "", True
-        except ValidationError as err:
-            return str(err), False
-
-
-spooler_object = RydbergSpooler(
+spooler_object = Spooler(
     ins_schema_dict={
         "rlx": RlxInstruction,
         "rlz": RlzInstruction,
@@ -216,6 +200,7 @@ spooler_object = RydbergSpooler(
         "barrier": BarrierInstruction,
         "measure": MeasureInstruction,
     },
+    device_config=RydbergExperiment,
     n_wires=N_MAX_WIRES,
     version="0.3",
     description="A chain of qubits realized through Rydberg atoms.",

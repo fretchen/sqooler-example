@@ -161,23 +161,7 @@ class FermionExperiment(BaseModel):
     seed: Optional[int] = None
 
 
-class FermionSpooler(Spooler):
-    """
-    The sppoler class that handles all the circuit logic.
-    """
-
-    def check_experiment(self, exper_dict: dict) -> Tuple[str, bool]:
-        """
-        Check the validity of the experiment.
-        """
-        try:
-            FermionExperiment(**exper_dict)
-            return "", True
-        except ValidationError as err:
-            return str(err), False
-
-
-spooler_object = FermionSpooler(
+spooler_object = Spooler(
     ins_schema_dict={
         "load": LoadMeasureInstruction,
         "barrier": BarrierInstruction,
@@ -186,6 +170,7 @@ spooler_object = FermionSpooler(
         "fphase": PhaseInstruction,
         "measure": LoadMeasureInstruction,
     },
+    device_config=FermionExperiment,
     n_wires=N_MAX_WIRES,
     description=(
         "simulator of a fermionic tweezer hardware. "

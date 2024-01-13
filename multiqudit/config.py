@@ -253,16 +253,6 @@ class MultiQuditSpooler(Spooler):
     The class that contains the logic of the multiqudit spooler.
     """
 
-    def check_experiment(self, exper_dict: dict) -> Tuple[str, bool]:
-        """
-        Check the validity of the experiment.
-        """
-        try:
-            MultiQuditExperiment(**exper_dict)
-            return "", True
-        except ValidationError as err:
-            return str(err), False
-
     def check_dimension(self, json_dict: dict) -> Tuple[str, bool]:
         """
         Make sure that the Hilbert space dimension is not too large.
@@ -297,6 +287,7 @@ spooler_object = MultiQuditSpooler(
         "measure": MeasureInstruction,
         "load": LoadInstruction,
     },
+    device_config=MultiQuditExperiment,
     n_wires=N_MAX_WIRES,
     description="Setup of a cold atomic gas experiment with a multiple qudits.",
     n_max_experiments=MAX_EXPERIMENTS,
