@@ -12,7 +12,6 @@ import numpy as np
 
 from sqooler.schemes import (
     Spooler,
-    gate_dict_from_list,
     GateInstruction,
 )
 
@@ -206,24 +205,6 @@ class RydbergSpooler(Spooler):
             return "", True
         except ValidationError as err:
             return str(err), False
-
-    def check_instructions(self, ins_list: list) -> Tuple[str, bool]:
-        """
-        Check all the instruction to make sure that they are valid.
-        """
-        err_code = ""
-        exp_ok = False
-        for ins in ins_list:
-            try:
-                gate_dict = gate_dict_from_list(ins)
-                self.ins_schema_dict[ins[0]](**gate_dict)
-                exp_ok = True
-            except ValidationError as err:
-                err_code = "Error in instruction " + str(err)
-                exp_ok = False
-            if not exp_ok:
-                break
-        return err_code, exp_ok
 
 
 spooler_object = RydbergSpooler(
