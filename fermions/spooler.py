@@ -7,7 +7,7 @@ from scipy.sparse.linalg import expm
 
 
 from sqooler.schemes import ExperimentDict
-from sqooler.utils import create_memory_data
+from sqooler.spoolers import create_memory_data
 
 
 def nested_kronecker_product(a: list) -> np.ndarray:

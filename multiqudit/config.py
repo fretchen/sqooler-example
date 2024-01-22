@@ -10,10 +10,9 @@ from typing_extensions import Annotated
 
 from numpy import pi
 
-from sqooler.schemes import (
-    Spooler,
-    GateInstruction,
-)
+
+from sqooler.schemes import GateInstruction
+from sqooler.spoolers import Spooler
 
 from .spooler import gen_circuit
 
