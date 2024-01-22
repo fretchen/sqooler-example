@@ -5,15 +5,14 @@ No simulation is performed here. The entire logic is implemented in the `spooler
 """
 
 from typing import List, Tuple, Literal, Optional
-from pydantic import Field, BaseModel, ValidationError
+from pydantic import Field, BaseModel
 from typing_extensions import Annotated
 
 from numpy import pi
 
-from sqooler.schemes import (
-    Spooler,
-    GateInstruction,
-)
+
+from sqooler.schemes import GateInstruction
+from sqooler.spoolers import Spooler
 
 from .spooler import gen_circuit
 
@@ -253,16 +252,6 @@ class MultiQuditSpooler(Spooler):
     The class that contains the logic of the multiqudit spooler.
     """
 
-    def check_experiment(self, exper_dict: dict) -> Tuple[str, bool]:
-        """
-        Check the validity of the experiment.
-        """
-        try:
-            MultiQuditExperiment(**exper_dict)
-            return "", True
-        except ValidationError as err:
-            return str(err), False
-
     def check_dimension(self, json_dict: dict) -> Tuple[str, bool]:
         """
         Make sure that the Hilbert space dimension is not too large.
@@ -297,6 +286,7 @@ spooler_object = MultiQuditSpooler(
         "measure": MeasureInstruction,
         "load": LoadInstruction,
     },
+    device_config=MultiQuditExperiment,
     n_wires=N_MAX_WIRES,
     description="Setup of a cold atomic gas experiment with a multiple qudits.",
     n_max_experiments=MAX_EXPERIMENTS,

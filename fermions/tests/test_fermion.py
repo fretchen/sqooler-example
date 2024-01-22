@@ -8,7 +8,9 @@ from icecream import ic
 import pytest
 from pydantic import ValidationError
 
-from sqooler.schemes import gate_dict_from_list, StatusMsgDict
+from sqooler.schemes import StatusMsgDict
+from sqooler.spoolers import gate_dict_from_list
+
 from sqooler.utils import run_json_circuit
 from fermions.config import (
     spooler_object as f_spooler,

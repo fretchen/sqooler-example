@@ -7,7 +7,7 @@ import pytest
 
 from pydantic import ValidationError
 
-from sqooler.schemes import StatusMsgDict, gate_dict_from_list
+from sqooler.spoolers import StatusMsgDict, gate_dict_from_list
 from sqooler.utils import run_json_circuit
 from multiqudit.config import (
     spooler_object as mq_spooler,
