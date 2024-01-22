@@ -7,7 +7,8 @@ import pytest
 
 from pydantic import ValidationError
 
-from sqooler.schemes import StatusMsgDict, gate_dict_from_list
+from sqooler.schemes import StatusMsgDict
+from sqooler.spoolers import gate_dict_from_list
 from sqooler.utils import run_json_circuit
 from rydberg.config import (
     spooler_object as ryd_spooler,
