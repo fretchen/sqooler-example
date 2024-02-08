@@ -7,7 +7,8 @@ import pytest
 
 from pydantic import ValidationError
 
-from sqooler.spoolers import StatusMsgDict, gate_dict_from_list
+from sqooler.schemes import get_init_status
+from sqooler.spoolers import gate_dict_from_list
 from sqooler.utils import run_json_circuit
 from multiqudit.config import (
     spooler_object as mq_spooler,
@@ -463,20 +464,15 @@ def test_add_job() -> None:
     }
 
     job_id = "1"
-    status_msg_draft = {
-        "job_id": job_id,
-        "status": "None",
-        "detail": "None",
-        "error_message": "None",
-    }
 
-    status_msg_dict = StatusMsgDict(**status_msg_draft)
+    status_msg_dict = get_init_status()
+    status_msg_dict.job_id = job_id
     result_dict, status_msg_dict = mq_spooler.add_job(job_payload, status_msg_dict)
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "1"
     for element in result_dict.results[  # pylint: disable=unsubscriptable-object
         0
-    ].data["memory"]:
+    ].data.memory:
         assert (
             element == expected_value
         ), f"Element {element} is not equal to {expected_value}"
