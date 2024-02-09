@@ -7,7 +7,7 @@ import pytest
 
 from pydantic import ValidationError
 
-from sqooler.schemes import StatusMsgDict
+from sqooler.schemes import get_init_status
 from sqooler.spoolers import gate_dict_from_list
 from sqooler.utils import run_json_circuit
 from rydberg.config import (
@@ -144,11 +144,8 @@ def test_blockade_instruction() -> None:
     """
     Test that the Rydberg blockade instruction is properly constrained.
     """
-    inst_list = ["rydberg_block", [0, 1], [0.7]]
-    gate_dict = gate_dict_from_list(inst_list)
-    RydbergBlockInstruction(**gate_dict.model_dump())
 
-    inst_list = ["rydberg_block", [0, 1], [0.7]]
+    inst_list = ["rydberg_block", [0, 1, 2, 3, 4], [0.7]]
     gate_dict = gate_dict_from_list(inst_list)
     RydbergBlockInstruction(**gate_dict.model_dump())
 
@@ -175,6 +172,11 @@ def test_blockade_instruction() -> None:
         poor_inst_list = ["rydberg_block", [0, 1], [200 * np.pi]]
         gate_dict = gate_dict_from_list(poor_inst_list)
         RydbergBlockInstruction(**gate_dict.model_dump())
+    # make sure that the coupling map is enforced to be within the limits
+    inst_list = ["rydberg_block", [0, 1], [0.7]]
+    gate_dict = gate_dict_from_list(inst_list)
+    with pytest.raises(ValidationError):
+        RydbergBlockInstruction(**gate_dict.model_dump())
 
     inst_config = {
         "name": "rydberg_block",
@@ -191,7 +193,7 @@ def test_blockade_instruction() -> None:
             "instructions": [
                 ["rlx", [0], [np.pi / 2]],
                 ["rlx", [1], [np.pi / 2]],
-                ["rydberg_block", [0, 1], [2 * np.pi]],
+                ["rydberg_block", [0, 1, 2, 3, 4], [2 * np.pi]],
                 ["rlx", [0], [np.pi / 2]],
                 ["rlx", [1], [np.pi / 2]],
                 ["measure", [0], []],
@@ -251,7 +253,7 @@ def test_rydberg_full_instruction() -> None:
     job_payload = {
         "experiment_0": {
             "instructions": [
-                ["rydberg_full", [0, 1], [np.pi, 0, 0]],
+                ["rydberg_full", [0, 1, 2, 3, 4], [np.pi, 0, 0]],
                 ["measure", [0], []],
                 ["measure", [1], []],
             ],
@@ -442,7 +444,7 @@ def test_number_experiments() -> None:
         "experiment_0": {
             "instructions": [
                 ["rlx", [0], [np.pi]],
-                ["rydberg_block", [0, 1], [np.pi / 2]],
+                ["rydberg_block", [0, 1, 2, 3, 4], [np.pi / 2]],
                 ["measure", [0], []],
                 ["measure", [1], []],
             ],
@@ -488,7 +490,7 @@ def test_add_job() -> None:
         "experiment_0": {
             "instructions": [
                 ["rlx", [0], [np.pi]],
-                ["rydberg_block", [0, 1], [np.pi / 2]],
+                ["rydberg_block", [0, 1, 2, 3, 4], [np.pi / 2]],
                 ["measure", [0], []],
                 ["measure", [1], []],
             ],
@@ -499,20 +501,15 @@ def test_add_job() -> None:
     }
 
     job_id = "1"
-    status_msg_draft = {
-        "job_id": job_id,
-        "status": "None",
-        "detail": "None",
-        "error_message": "None",
-    }
 
-    status_msg_dict = StatusMsgDict(**status_msg_draft)
+    status_msg_dict = get_init_status()
+    status_msg_dict.job_id = job_id
     result_dict, status_msg_dict = ryd_spooler.add_job(job_payload, status_msg_dict)
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "1 0"
     for element in result_dict.results[  # pylint: disable=unsubscriptable-object
         0
-    ].data["memory"]:
+    ].data.memory:
         assert (
             element == expected_value
         ), f"Element {element} is not equal to {expected_value}"
