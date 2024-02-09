@@ -2,9 +2,10 @@
 Test module for the spooler_singlequdit.py file.
 """
 
+from typing import Iterator, Callable
+
 import pytest
 from pydantic import ValidationError
-from typing import Iterator, Callable
 
 import numpy as np
 
@@ -22,8 +23,6 @@ from singlequdit.config import (
     RlxInstruction,
     SinglequditFullInstruction,
 )
-from pprint import pprint
-from icecream import ic
 
 
 # pylint: disable=W0613, W0621
@@ -140,10 +139,8 @@ def test_load_instruction(sqooler_setup_teardown: Callable) -> None:
             "wire_order": "sequential",
         }
     }
-    ic("test loading")
     job_id = "2"
     data = run_json_circuit(job_payload, job_id, sq_spooler)
-    ic("finished")
     shots_array = data["results"][0]["data"]["memory"]
     assert shots_array[0] == "50", "job result got messed up"
     assert data["job_id"] == job_id, "job_id got messed up"
@@ -395,11 +392,13 @@ def test_rydberg_full_instruction() -> None:
 
     job_id = "2"
     data = run_json_circuit(job_payload, job_id, sq_spooler)
-    ic(data)
     shots_array = data["results"][0]["data"]["memory"]
     assert shots_array[0] == "50", "job result got messed up"
     assert data["job_id"] == job_id, "job_id got messed up"
     assert len(shots_array) > 0, "shots_array got messed up"
+
+    # are the instructions in ?
+    assert len(data["results"][0]["data"]["instructions"]) == 3
 
 
 def test_spooler_config(sqooler_setup_teardown: Callable) -> None:

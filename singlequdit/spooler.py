@@ -11,8 +11,6 @@ from scipy.sparse import diags, csc_matrix
 from sqooler.schemes import ExperimentDict
 from sqooler.spoolers import create_memory_data, gate_dict_from_list
 
-from icecream import ic
-
 
 def gen_circuit(json_dict: dict) -> ExperimentDict:
     """The function the creates the instructions for the circuit.
