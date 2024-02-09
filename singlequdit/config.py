@@ -45,7 +45,7 @@ class RlxInstruction(GateInstruction):
     parameters: str = "omega"
     description: str = "Evolution under Lx"
     # TODO: This should become most likely a type that is then used for the enforcement of the wires.
-    coupling_map: List = [[0], [1], [2], [3], [4]]
+    coupling_map: List = [[0]]
     qasm_def: str = "gate lrx(omega) {}"
 
 
@@ -73,7 +73,7 @@ class RlzInstruction(GateInstruction):
     parameters: str = "delta"
     description: str = "Evolution under the Z gate"
     # TODO: This should become most likely a type that is then used for the enforcement of the wires.
-    coupling_map: List = [[0], [1], [2], [3], [4]]
+    coupling_map: List = [[0]]
     qasm_def: str = "gate rlz(delta) {}"
 
 
@@ -101,8 +101,36 @@ class LocalSqueezingInstruction(GateInstruction):
     parameters: str = "chi"
     description: str = "Evolution under lz2"
     # TODO: This should become most likely a type that is then used for the enforcement of the wires.
-    coupling_map: List = [[0], [1], [2], [3], [4]]
+    coupling_map: List = [[0]]
     qasm_def: str = "gate rlz2(chi) {}"
+
+
+class SinglequditFullInstruction(GateInstruction):
+    """
+    The evolution under the full Hamiltonian. As each instruction it requires the
+
+    Attributes:
+        name: The string to identify the instruction
+        wires: The wire on which the instruction should be applied
+            so the indices should be between 0 and N_MAX_WIRES-1
+        params: Define the parameter for `RX`, `RZ`and `RZ2` in this order
+    """
+
+    name: Literal["sq_full"] = "sq_full"
+    wires: Annotated[
+        List[Annotated[int, Field(ge=0, le=0)]], Field(min_length=0, max_length=1)
+    ]
+    params: Annotated[
+        List[Annotated[float, Field(ge=0, le=5e6 * np.pi)]],
+        Field(min_length=3, max_length=3),
+    ]
+
+    # a string that is sent over to the config dict and that is necessary for compatibility with QISKIT.
+    parameters: str = "omega, delta, chi"
+    description: str = "Apply the full time evolution on the array."
+    # TODO: This should become most likely a type that is then used for the enforcement of the wires.
+    coupling_map: List = [[0]]
+    qasm_def: str = "gate sq_full(omega, delta, chi) {}"
 
 
 class LoadInstruction(BaseModel):
@@ -133,7 +161,7 @@ class MeasureBarrierInstruction(BaseModel):
     Attributes:
         name: The string to identify the instruction
         wires: The wire on which the instruction should be applied
-            so the indices should be between 0 and N_MAX_WIRES-1
+            so the index should be 0
         params: has to be empty
     """
 
@@ -168,10 +196,11 @@ spooler_object = Spooler(
         "barrier": MeasureBarrierInstruction,
         "measure": MeasureBarrierInstruction,
         "load": LoadInstruction,
+        "sq_full": SinglequditFullInstruction,
     },
     device_config=SingleQuditExperiment,
     n_wires=1,
-    version="0.2",
+    version="0.3",
     description="Setup of a cold atomic gas experiment with a single qudit.",
     n_max_experiments=MAX_EXPERIMENTS,
     n_max_shots=N_MAX_SHOTS,
