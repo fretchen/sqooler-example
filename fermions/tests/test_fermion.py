@@ -4,11 +4,10 @@ Test module for the spooler_fermion.py file.
 
 import numpy as np
 
-from icecream import ic
 import pytest
 from pydantic import ValidationError
 
-from sqooler.schemes import StatusMsgDict
+from sqooler.schemes import get_init_status
 from sqooler.spoolers import gate_dict_from_list
 
 from sqooler.utils import run_json_circuit
@@ -130,7 +129,7 @@ def test_hop_instruction() -> None:
     """
     Test that the hop instruction instruction is properly constrained.
     """
-    inst_list = ["fhop", [0, 4, 1, 5], [np.pi / 2]]
+    inst_list = ["fhop", [0, 1, 2, 3], [np.pi / 2]]
     gate_dict = gate_dict_from_list(inst_list)
     HopInstruction(**gate_dict.model_dump())
 
@@ -158,6 +157,11 @@ def test_hop_instruction() -> None:
         gate_dict = gate_dict_from_list(poor_inst_list)
         HopInstruction(**gate_dict.model_dump())
 
+    # make sure that the coupling map is enforced
+    with pytest.raises(ValidationError):
+        inst_list = ["fhop", [0, 4, 1, 5], [np.pi / 2]]
+        gate_dict = gate_dict_from_list(poor_inst_list)
+        HopInstruction(**gate_dict.model_dump())
     # also look into the config dict
     inst_config = {
         "coupling_map": [
@@ -178,7 +182,7 @@ def test_interaction_instruction() -> None:
     """
     Test that the hop instruction instruction is properly constrained.
     """
-    inst_list = ["fint", [0, 4], [np.pi / 2]]
+    inst_list = ["fint", [0, 1, 2, 3, 4, 5, 6, 7], [np.pi / 2]]
     gate_dict = gate_dict_from_list(inst_list)
     IntInstruction(**gate_dict.model_dump())
 
@@ -204,6 +208,12 @@ def test_interaction_instruction() -> None:
         poor_inst_list = ["fint", [0, 4], [3 * np.pi]]
         gate_dict = gate_dict_from_list(poor_inst_list)
         HopInstruction(**gate_dict.model_dump())
+
+    # make sure that the coupling map is enforced
+    with pytest.raises(ValidationError):
+        inst_list = ["fint", [0, 1, 2, 3, 4, 6, 7], [np.pi / 2]]
+        gate_dict = gate_dict_from_list(inst_list)
+        IntInstruction(**gate_dict.model_dump())
 
     # also look into the config dict
     inst_config = {
@@ -282,12 +292,12 @@ def test_hop_gate() -> None:
         "experiment_0": {
             "instructions": [
                 ["load", [0], []],
-                ["load", [4], []],
-                ["fhop", [0, 4, 1, 5], [np.pi / 2]],
+                ["load", [1], []],
+                ["fhop", [0, 1, 2, 3], [np.pi / 2]],
                 ["measure", [0], []],
                 ["measure", [1], []],
-                ["measure", [4], []],
-                ["measure", [5], []],
+                ["measure", [2], []],
+                ["measure", [3], []],
             ],
             "num_wires": 8,
             "shots": 4,
@@ -301,7 +311,7 @@ def test_hop_gate() -> None:
     shots_array = data["results"][0]["data"]["memory"]
     assert data["job_id"] == job_id, "job_id got messed up"
     assert len(shots_array) > 0, "shots_array got messed up"
-    assert shots_array[0] == "0 1 0 1", "shots_array got messed up"
+    assert shots_array[0] == "0 0 1 1", "shots_array got messed up"
 
 
 def test_number_experiments() -> None:
@@ -315,7 +325,7 @@ def test_number_experiments() -> None:
             "instructions": [
                 ["load", [0], []],
                 ["load", [4], []],
-                ["fhop", [0, 4, 1, 5], [np.pi / 2]],
+                ["fhop", [0, 1, 2, 3], [np.pi / 2]],
                 ["measure", [0], []],
                 ["measure", [1], []],
                 ["measure", [4], []],
@@ -366,11 +376,11 @@ def test_phase_gate() -> None:
         "experiment_0": {
             "instructions": [
                 ["load", [0], []],
-                ["fhop", [0, 4, 1, 5], [np.pi / 4]],
-                ["fphase", [2, 6], [np.pi]],
-                ["fhop", [0, 4, 1, 5], [np.pi / 4]],
+                ["fhop", [0, 1, 2, 3], [np.pi / 4]],
+                ["fphase", [2, 3], [np.pi]],
+                ["fhop", [0, 1, 2, 3], [np.pi / 4]],
                 ["measure", [0], []],
-                ["measure", [1], []],
+                ["measure", [2], []],
             ],
             "num_wires": 8,
             "shots": 2,
@@ -380,11 +390,10 @@ def test_phase_gate() -> None:
 
     job_id = "1"
     data = run_json_circuit(job_payload, job_id, f_spooler)
-
     shots_array = data["results"][0]["data"]["memory"]
     assert data["job_id"] == job_id, "job_id got messed up"
     assert len(shots_array) > 0, "shots_array got messed up"
-    assert shots_array[0] == "0 1", "shots_array got messed up"
+    assert shots_array[0] == "1 0", "shots_array got messed up"
 
     # also look into the config dict
     inst_config = {
@@ -408,11 +417,11 @@ def test_seed() -> None:
             "instructions": [
                 ["load", [0], []],
                 ["load", [1], []],
-                ["fhop", [0, 4, 1, 5], [np.pi / 4]],
+                ["fhop", [0, 1, 2, 3], [np.pi / 4]],
                 ["measure", [0], []],
                 ["measure", [1], []],
-                ["measure", [4], []],
-                ["measure", [5], []],
+                ["measure", [2], []],
+                ["measure", [3], []],
             ],
             "num_wires": 8,
             "shots": 4,
@@ -423,11 +432,11 @@ def test_seed() -> None:
             "instructions": [
                 ["load", [0], []],
                 ["load", [1], []],
-                ["fhop", [0, 4, 1, 5], [np.pi / 4]],
+                ["fhop", [0, 1, 2, 3], [np.pi / 4]],
                 ["measure", [0], []],
                 ["measure", [1], []],
-                ["measure", [4], []],
-                ["measure", [5], []],
+                ["measure", [2], []],
+                ["measure", [3], []],
             ],
             "num_wires": 8,
             "shots": 4,
@@ -526,11 +535,11 @@ def test_add_job() -> None:
         "experiment_0": {
             "instructions": [
                 ["load", [0], []],
-                ["fhop", [0, 4, 1, 5], [np.pi / 4]],
-                ["fphase", [2, 6], [np.pi]],
-                ["fhop", [0, 4, 1, 5], [np.pi / 4]],
+                ["fhop", [0, 1, 2, 3], [np.pi / 4]],
+                ["fphase", [2, 3], [np.pi]],
+                ["fhop", [0, 1, 2, 3], [np.pi / 4]],
                 ["measure", [0], []],
-                ["measure", [1], []],
+                ["measure", [2], []],
             ],
             "num_wires": 8,
             "shots": 2,
@@ -539,20 +548,15 @@ def test_add_job() -> None:
     }
 
     job_id = "1"
-    status_msg_draft = {
-        "job_id": job_id,
-        "status": "None",
-        "detail": "None",
-        "error_message": "None",
-    }
-    status_msg_dict = StatusMsgDict(**status_msg_draft)
+    status_msg_dict = get_init_status()
+    status_msg_dict.job_id = job_id
+
     result_dict, status_msg_dict = f_spooler.add_job(job_payload, status_msg_dict)
     # assert that all the elements in the result dict memory are of string '1 0'
-    expected_value = "0 1"
-    ic(result_dict)
+    expected_value = "1 0"
     for element in result_dict.results[  # pylint: disable=unsubscriptable-object
         0
-    ].data["memory"]:
+    ].data.memory:
         assert (
             element == expected_value
         ), f"Element {element} is not equal to {expected_value}"
