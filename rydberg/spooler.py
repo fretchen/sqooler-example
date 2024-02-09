@@ -3,6 +3,7 @@ The module that contains all the necessary logic for the Rydberg simulator.
 It has to implement the code that is executed for all the instructions that we defined 
 in the  `config.py` file.
 """
+
 from typing import List
 
 import numpy as np
