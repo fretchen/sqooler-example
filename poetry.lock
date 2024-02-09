@@ -375,13 +375,13 @@ dev = ["flake8", "markdown", "twine", "wheel"]
 
 [[package]]
 name = "griffe"
-version = "0.40.0"
+version = "0.40.1"
 description = "Signatures for entire Python programs. Extract the structure, the frame, the skeleton of your project, to generate API documentation or find breaking changes in your API."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "griffe-0.40.0-py3-none-any.whl", hash = "sha256:db1da6d1d8e08cbb20f1a7dee8c09da940540c2d4c1bfa26a9091cf6fc36a9ec"},
-    {file = "griffe-0.40.0.tar.gz", hash = "sha256:76c4439eaa2737af46ae003c331ab6ca79c5365b552f7b5aed263a3b4125735b"},
+    {file = "griffe-0.40.1-py3-none-any.whl", hash = "sha256:5b8c023f366fe273e762131fe4bfd141ea56c09b3cb825aa92d06a82681cfd93"},
+    {file = "griffe-0.40.1.tar.gz", hash = "sha256:66c48a62e2ce5784b6940e603300fcfb807b6f099b94e7f753f1841661fd5c7c"},
 ]
 
 [package.dependencies]
@@ -1572,25 +1572,21 @@ files = [
 
 [[package]]
 name = "sqooler"
-version = "0.5.0a0"
+version = "0.5.0"
 description = "Code that enables validated cloud access to quantum hardware (simulators)"
 optional = false
-python-versions = "^3.10"
-files = []
-develop = false
+python-versions = ">=3.10,<4.0"
+files = [
+    {file = "sqooler-0.5.0-py3-none-any.whl", hash = "sha256:3aba0b8efeab4d11dcacb0c8083cc2dc56080c4176a5deb74b067e1336d872aa"},
+    {file = "sqooler-0.5.0.tar.gz", hash = "sha256:815a5ef21e372f8cb668e7190f90d95da20ce9d41989ff3b3f1102203f6f3dc8"},
+]
 
 [package.dependencies]
-dropbox = "^11.36.2"
-pydantic = "^2.3.0"
-pymongo = "^4.3.3"
-regex = "^2023.6.3"
-setuptools = "^69.0.3"
-
-[package.source]
-type = "git"
-url = "https://github.com/Alqor-UG/sqooler.git"
-reference = "HEAD"
-resolved_reference = "281c0bcc3a0501c5000a9096dc671a571bc7e28c"
+dropbox = ">=11.36.2,<12.0.0"
+pydantic = ">=2.3.0,<3.0.0"
+pymongo = ">=4.3.3,<5.0.0"
+regex = ">=2023.6.3,<2024.0.0"
+setuptools = ">=69.0.3,<70.0.0"
 
 [[package]]
 name = "stone"
@@ -1751,4 +1747,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "59951c87b51fa7246200bcb7dc507eaa2d0f39a4ce8ff7b0c3bd05017296dd64"
+content-hash = "e2bdcfb0456ab0710e674f7f5c3ead80b48f2792095038ba4c7f5b3c2bd830b6"
