@@ -16,14 +16,11 @@ from sqooler.spoolers import Spooler
 
 from .spooler import gen_circuit
 
-N_MAX_WIRES = 4
+N_MAX_WIRES = 5
 N_MAX_SHOTS = int(1e6)
 MAX_EXPERIMENTS = 1000
 N_MAX_ATOMS = 500
 MAX_HILBERT_SPACE_DIM = 2**12
-
-# define the instructions in the following
-# rlx instruction
 
 # define the instructions in the following
 
@@ -173,6 +170,36 @@ class RlzlzInstruction(GateInstruction):
     qasm_def: str = "gate rlzlz(J) {}"
 
 
+class MultiQuditFullInstruction(GateInstruction):
+    """
+    The time evolution under the global Hamiltonian. It does not allow for any local control.
+
+    Attributes:
+        name: The string to identify the instruction
+        wires: The wire on which the instruction should be applied
+            so the indices should be between 0 and N_MAX_WIRES-1
+        params: Define the parameter for `RX`, `RZ`and `RZZ` on site, `RXY`on neighboring sites, `RZZ`
+            on neighboring sites in this order
+    """
+
+    name: Literal["multiqudit_full"] = "multiqudit_full"
+    wires: Annotated[
+        List[Annotated[int, Field(ge=0, le=N_MAX_WIRES - 1)]],
+        Field(min_length=2, max_length=N_MAX_WIRES),
+    ]
+    params: Annotated[
+        List[Annotated[float, Field(ge=0, le=5e6 * pi)]],
+        Field(min_length=5, max_length=5),
+    ]
+
+    # a string that is sent over to the config dict and that is necessary for compatibility with QISKIT.
+    parameters: str = "omega, delta, chi, Jxy, Jzz"
+    description: str = "Apply the Rydberg and Rabi coupling over the whole array."
+    # TODO: This should become most likely a type that is then used for the enforcement of the wires.
+    coupling_map: List = [[0], [0, 1], [0, 1, 2], [0, 1, 2, 3], [0, 1, 2, 3, 4]]
+    qasm_def: str = "gate multiqudit_full(omega, delta, chi, Jxy, Jzz) {}"
+
+
 class BarrierInstruction(BaseModel):
     """
     The barrier instruction. As each instruction it requires the
@@ -285,13 +312,14 @@ spooler_object = MultiQuditSpooler(
         "barrier": BarrierInstruction,
         "measure": MeasureInstruction,
         "load": LoadInstruction,
+        "multiqudit_full": MultiQuditFullInstruction,
     },
     device_config=MultiQuditExperiment,
     n_wires=N_MAX_WIRES,
     description="Setup of a cold atomic gas experiment with a multiple qudits.",
     n_max_experiments=MAX_EXPERIMENTS,
     n_max_shots=N_MAX_SHOTS,
-    version="0.1",
+    version="0.2",
 )
 
 # Now also add the function that generates the circuit
