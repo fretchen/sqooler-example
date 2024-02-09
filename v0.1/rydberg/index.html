@@ -1664,8 +1664,7 @@ in the  <code>config.py</code> file.</p>
 
           <details class="quote">
             <summary>Source code in <code>rydberg/spooler.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 45</span>
-<span class="normal"> 46</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 46</span>
 <span class="normal"> 47</span>
 <span class="normal"> 48</span>
 <span class="normal"> 49</span>
@@ -1798,7 +1797,8 @@ in the  <code>config.py</code> file.</p>
 <span class="normal">176</span>
 <span class="normal">177</span>
 <span class="normal">178</span>
-<span class="normal">179</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">gen_circuit</span><span class="p">(</span><span class="n">json_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExperimentDict</span><span class="p">:</span>
+<span class="normal">179</span>
+<span class="normal">180</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">gen_circuit</span><span class="p">(</span><span class="n">json_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExperimentDict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The function the creates the instructions for the circuit.</span>
 
 <span class="sd">    json_dict: The list of instructions for the specific run.</span>
@@ -2039,8 +2039,7 @@ Basically this creates the nice tensor products.</p>
 
           <details class="quote">
             <summary>Source code in <code>rydberg/spooler.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
-<span class="normal">18</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">18</span>
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
@@ -2064,7 +2063,8 @@ Basically this creates the nice tensor products.</p>
 <span class="normal">39</span>
 <span class="normal">40</span>
 <span class="normal">41</span>
-<span class="normal">42</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">op_at_wire</span><span class="p">(</span><span class="n">op</span><span class="p">:</span> <span class="n">csc_matrix</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dim_per_wire</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">csc_matrix</span><span class="p">:</span>
+<span class="normal">42</span>
+<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">op_at_wire</span><span class="p">(</span><span class="n">op</span><span class="p">:</span> <span class="n">csc_matrix</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dim_per_wire</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">csc_matrix</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies an operation onto the wire and provides unitaries on the other wires.</span>
 <span class="sd">    Basically this creates the nice tensor products.</span>
