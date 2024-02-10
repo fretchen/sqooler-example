@@ -11,7 +11,7 @@ from scipy.sparse import identity, diags, csc_matrix
 from scipy import sparse
 from scipy.sparse.linalg import expm_multiply
 
-from sqooler.spoolers import create_memory_data
+from sqooler.spoolers import create_memory_data, gate_dict_from_list
 from sqooler.schemes import ExperimentDict
 
 
@@ -49,7 +49,9 @@ def gen_circuit(json_dict: dict) -> ExperimentDict:
     json_dict: The list of instructions for the specific run.
     """
     exp_name = next(iter(json_dict))
-    ins_list = json_dict[next(iter(json_dict))]["instructions"]
+    raw_ins_list = json_dict[next(iter(json_dict))]["instructions"]
+    ins_list = [gate_dict_from_list(instr) for instr in raw_ins_list]
+
     n_shots = json_dict[next(iter(json_dict))]["shots"]
     n_wires = json_dict[next(iter(json_dict))]["num_wires"]
     spin_per_wire = 1 / 2 * np.ones(n_wires)
@@ -136,20 +138,20 @@ def gen_circuit(json_dict: dict) -> ExperimentDict:
     measurement_indices = []
     shots_array = []
     for inst in ins_list:
-        if inst[0] == "rlx":
-            position = inst[1][0]
-            theta = inst[2][0]
+        if inst.name == "rlx":
+            position = inst.wires[0]
+            theta = inst.params[0]
             psi = expm_multiply(-1j * theta * lx_list[position], psi)
-        if inst[0] == "rlz":
-            position = inst[1][0]
-            theta = inst[2][0]
+        if inst.name == "rlz":
+            position = inst.wires[0]
+            theta = inst.params[0]
             psi = expm_multiply(-1j * theta * lz_list[position], psi)
-        if inst[0] == "rydberg_block":
+        if inst.name == "rydberg_block":
             # apply gate on all qubits
-            theta = inst[2][0]
+            theta = inst.params[0]
             psi = expm_multiply(-1j * theta * int_matrix, psi)
-        if inst[0] == "rydberg_full":
-            omega, delta, phi = inst[2]
+        if inst.name == "rydberg_full":
+            omega, delta, phi = inst.params
             u_full = csc_matrix((dim_hilbert, dim_hilbert))
             # first the RX
             for lxi in lx_list:
@@ -160,8 +162,8 @@ def gen_circuit(json_dict: dict) -> ExperimentDict:
             # end the blockade
             u_full = u_full + phi * int_matrix
             psi = expm_multiply(-1j * u_full, psi)
-        if inst[0] == "measure":
-            measurement_indices.append(inst[1][0])
+        if inst.name == "measure":
+            measurement_indices.append(inst.wires[0])
     if measurement_indices:
         # the following filters out the results for the indices we prefer.
         probs = np.squeeze(abs(psi.toarray()) ** 2)
@@ -176,5 +178,5 @@ def gen_circuit(json_dict: dict) -> ExperimentDict:
             measurements[i1, :] = observed[measurement_indices]  # type: ignore
         shots_array = measurements.tolist()
 
-    exp_sub_dict = create_memory_data(shots_array, exp_name, n_shots)
+    exp_sub_dict = create_memory_data(shots_array, exp_name, n_shots, ins_list)
     return exp_sub_dict

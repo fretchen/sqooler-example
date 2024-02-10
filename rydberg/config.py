@@ -115,7 +115,7 @@ class RydbergFullInstruction(GateInstruction):
         name: The string to identify the instruction
         wires: The wire on which the instruction should be applied
             so the indices should be between 0 and N_MAX_WIRES-1
-        params: Define the paramert for `RX`, `RZ`and `RydbergBlock` in this order
+        params: Define the parameter for `RX`, `RZ`and `RydbergBlock` in this order
     """
 
     name: Literal["rydberg_full"] = "rydberg_full"

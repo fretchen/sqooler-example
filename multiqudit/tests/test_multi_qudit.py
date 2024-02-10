@@ -2,6 +2,8 @@
 Test module for the spooler_multiqudit.py file.
 """
 
+from typing import Iterator, Callable
+
 import numpy as np
 import pytest
 
@@ -18,7 +20,22 @@ from multiqudit.config import (
     RlzInstruction,
     RlxlyInstruction,
     RlzlzInstruction,
+    MultiQuditFullInstruction,
 )
+
+
+# pylint: disable=W0613, W0621
+@pytest.fixture
+def sqooler_setup_teardown() -> Iterator[None]:
+    """
+    Make sure that the storage folder is empty before and after the test.
+    """
+    # setup code here if required one day
+    mq_spooler.display_name = "multiqudit"
+
+    yield  # this is where the testing happens
+
+    # teardown code if required
 
 
 def test_pydantic_exp_validation() -> None:
@@ -51,7 +68,7 @@ def test_pydantic_exp_validation() -> None:
         MultiQuditExperiment(**poor_experiment)
 
 
-def test_local_rot_instruction() -> None:
+def test_local_rot_instruction(sqooler_setup_teardown: Callable) -> None:
     """
     Test that the hop instruction instruction is properly constrained.
     """
@@ -95,6 +112,85 @@ def test_local_rot_instruction() -> None:
         "description": "Evolution under Lx",
     }
     assert inst_config == RlxInstruction.config_dict()
+
+    job_payload = {
+        "experiment_0": {
+            "instructions": [
+                ["load", [1], [50.0]],
+                ["rlx", [1], [np.pi]],
+                ["measure", [1], []],
+            ],
+            "num_wires": 2,
+            "shots": 3,
+        },
+    }
+
+    job_id = "1"
+    data = run_json_circuit(job_payload, job_id, mq_spooler)
+    shots_array = data["results"][0]["data"]["memory"]
+    assert shots_array[0] == "50", "job result got messed up"
+
+    assert data["job_id"] == job_id, "job_id got messed up"
+    assert len(shots_array) > 0, "shots_array got messed up"
+
+    # are the instructions in ?
+    assert len(data["results"][0]["data"]["instructions"]) == 3
+
+
+def test_mq_full_instruction(sqooler_setup_teardown: Callable) -> None:
+    """
+    Test that the hop instruction instruction is properly constrained.
+    """
+    inst_list = ["multiqudit_full", [0, 1, 2, 3, 4], [0, 0, 0, 0, 0]]
+    gate_dict = gate_dict_from_list(inst_list)
+    MultiQuditFullInstruction(**gate_dict.model_dump())
+
+    # test that the name is nicely fixed
+    with pytest.raises(ValidationError):
+        poor_inst_list = ["mq_full", [0, 1, 2], [0, 0, 0, 0, 0]]
+        gate_dict = gate_dict_from_list(poor_inst_list)
+        MultiQuditFullInstruction(**gate_dict.model_dump())
+
+    # test that we cannot give too many wires
+    with pytest.raises(ValidationError):
+        poor_inst_list = ["multiqudit_full", [0, 1, 2, 3, 4, 5], [0, 0, 0, 0, 0]]
+        gate_dict = gate_dict_from_list(poor_inst_list)
+        MultiQuditFullInstruction(**gate_dict.model_dump())
+
+    # make sure that the wires cannot be above the limit
+    with pytest.raises(ValidationError):
+        poor_inst_list = ["multiqudit_full", [0, 7, 8], [0, 0, 0, 0, 0]]
+        gate_dict = gate_dict_from_list(poor_inst_list)
+        MultiQuditFullInstruction(**gate_dict.model_dump())
+
+    # make sure that the parameters are enforced to be within the limits
+    with pytest.raises(ValidationError):
+        poor_inst_list = ["multiqudit_full", [0, 1, 2], [1e9, 0, 0, 0, 0]]
+        gate_dict = gate_dict_from_list(poor_inst_list)
+        MultiQuditFullInstruction(**gate_dict.model_dump())
+
+    job_payload = {
+        "experiment_0": {
+            "instructions": [
+                ["load", [1], [50.0]],
+                ["multiqudit_full", [0, 1], [np.pi, 0, 0, 0, 0]],
+                ["measure", [1], []],
+            ],
+            "num_wires": 2,
+            "shots": 3,
+        },
+    }
+
+    job_id = "1"
+    data = run_json_circuit(job_payload, job_id, mq_spooler)
+    shots_array = data["results"][0]["data"]["memory"]
+    assert shots_array[0] == "50", "job result got messed up"
+
+    assert data["job_id"] == job_id, "job_id got messed up"
+    assert len(shots_array) > 0, "shots_array got messed up"
+
+    # are the instructions in ?
+    assert len(data["results"][0]["data"]["instructions"]) == 3
 
 
 def test_squeezing_instruction() -> None:
@@ -323,7 +419,7 @@ def test_rlxly_gate() -> None:
     assert len(shots_array) > 0, "shots_array got messed up"
 
 
-def test_spooler_config() -> None:
+def test_spooler_config(sqooler_setup_teardown: Callable) -> None:
     """
     Test that the back-end is properly configured and we can indeed provide those parameters
      as we would like.
@@ -331,7 +427,7 @@ def test_spooler_config() -> None:
 
     mq_config_dict = {
         "description": "Setup of a cold atomic gas experiment with a multiple qudits.",
-        "version": "0.1",
+        "version": "0.2",
         "cold_atom_type": "spin",
         "gates": [
             {
@@ -369,6 +465,14 @@ def test_spooler_config() -> None:
                 "parameters": ["J"],
                 "qasm_def": "gate rlzlz(J) {}",
             },
+            {
+                "coupling_map": [[0], [0, 1], [0, 1, 2], [0, 1, 2, 3], [0, 1, 2, 3, 4]],
+                "description": "Apply the Rydberg and Rabi coupling over the whole "
+                "array.",
+                "name": "multiqudit_full",
+                "parameters": ["omega, delta, chi, Jxy, Jzz"],
+                "qasm_def": "gate multiqudit_full(omega, delta, chi, Jxy, Jzz) " "{}",
+            },
         ],
         "max_experiments": 1000,
         "max_shots": 1e6,
@@ -382,11 +486,12 @@ def test_spooler_config() -> None:
             "barrier",
             "measure",
             "load",
+            "multiqudit_full",
         ],
-        "num_wires": 4,
+        "num_wires": 5,
         "wire_order": "interleaved",
         "num_species": 1,
-        "display_name": "",
+        "display_name": "multiqudit",
         "operational": True,
         "pending_jobs": None,
         "status_msg": None,

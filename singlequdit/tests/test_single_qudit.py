@@ -2,8 +2,11 @@
 Test module for the spooler_singlequdit.py file.
 """
 
+from typing import Iterator, Callable
+
 import pytest
 from pydantic import ValidationError
+
 import numpy as np
 
 from sqooler.schemes import get_init_status
@@ -18,7 +21,22 @@ from singlequdit.config import (
     LocalSqueezingInstruction,
     RlzInstruction,
     RlxInstruction,
+    SinglequditFullInstruction,
 )
+
+
+# pylint: disable=W0613, W0621
+@pytest.fixture
+def sqooler_setup_teardown() -> Iterator[None]:
+    """
+    Make sure that the storage folder is empty before and after the test.
+    """
+    # setup code here if required one day
+    sq_spooler.display_name = "singlequdit"
+
+    yield  # this is where the testing happens
+
+    # teardown code if required
 
 
 def test_pydantic_exp_validation() -> None:
@@ -69,13 +87,13 @@ def test_pydantic_exp_validation() -> None:
         "name": "rlx",
         "parameters": ["omega"],
         "qasm_def": "gate lrx(omega) {}",
-        "coupling_map": [[0], [1], [2], [3], [4]],
+        "coupling_map": [[0]],
         "description": "Evolution under Lx",
     }
     assert inst_config == RlxInstruction.config_dict()
 
 
-def test_load_instruction() -> None:
+def test_load_instruction(sqooler_setup_teardown: Callable) -> None:
     """
     Test that the load instruction instruction is properly constrained.
     """
@@ -106,6 +124,29 @@ def test_load_instruction() -> None:
         poor_inst_list = ["load", [0], [7e9]]
         gate_dict = gate_dict_from_list(poor_inst_list)
         LoadInstruction(**gate_dict.model_dump())
+
+    # test that the load gate works out properly
+    n_shots = 5
+    job_payload = {
+        "experiment_0": {
+            "instructions": [
+                ["load", [0], [50.0]],
+                ["rlx", [0], [np.pi]],
+                ["measure", [0], []],
+            ],
+            "num_wires": 1,
+            "shots": n_shots,
+            "wire_order": "sequential",
+        }
+    }
+    job_id = "2"
+    data = run_json_circuit(job_payload, job_id, sq_spooler)
+    shots_array = data["results"][0]["data"]["memory"]
+    assert shots_array[0] == "50", "job result got messed up"
+    assert data["job_id"] == job_id, "job_id got messed up"
+    assert len(shots_array) == n_shots, "shots_array got messed up"
+    assert data["display_name"] == "singlequdit"
+    assert data["backend_version"] == "0.3"
 
 
 def test_local_rot_instruction() -> None:
@@ -182,7 +223,7 @@ def test_squeezing_instruction() -> None:
         "name": "rlz2",
         "parameters": ["chi"],
         "qasm_def": "gate rlz2(chi) {}",
-        "coupling_map": [[0], [1], [2], [3], [4]],
+        "coupling_map": [[0]],
         "description": "Evolution under lz2",
     }
     assert inst_config == LocalSqueezingInstruction.config_dict()
@@ -288,52 +329,133 @@ def test_z_gate() -> None:
         "name": "rlz",
         "parameters": ["delta"],
         "qasm_def": "gate rlz(delta) {}",
-        "coupling_map": [[0], [1], [2], [3], [4]],
+        "coupling_map": [[0]],
         "description": "Evolution under the Z gate",
     }
     assert inst_config == RlzInstruction.config_dict()
 
 
-def test_spooler_config() -> None:
+def test_rydberg_full_instruction() -> None:
+    """
+    Test that the SinglequditFull  instruction is properly working.
+    """
+    inst_list = ["sq_full", [0], [0.7, 1, 3]]
+    gate_dict = gate_dict_from_list(inst_list)
+    SinglequditFullInstruction(**gate_dict.model_dump())
+
+    # test that the name is nicely fixed
+    with pytest.raises(ValidationError):
+        poor_inst_list = ["rydberg_full", [0], [0.7, 1, 3]]
+        gate_dict = gate_dict_from_list(poor_inst_list)
+        SinglequditFullInstruction(**gate_dict.model_dump())
+
+    # test that we cannot give too few wires
+    with pytest.raises(ValidationError):
+        poor_inst_list = ["sq_full", [], [0.7, 1, 3]]
+        gate_dict = gate_dict_from_list(poor_inst_list)
+        SinglequditFullInstruction(**gate_dict.model_dump())
+
+    # make sure that the wires cannot be above the limit
+    with pytest.raises(ValidationError):
+        poor_inst_list = ["sq_full", [0], [0.7, 1, 3e7]]
+        gate_dict = gate_dict_from_list(poor_inst_list)
+        SinglequditFullInstruction(**gate_dict.model_dump())
+
+    inst_config = {
+        "name": "sq_full",
+        "parameters": ["omega, delta, chi"],
+        "qasm_def": "gate sq_full(omega, delta, chi) {}",
+        "coupling_map": [[0]],
+        "description": "Apply the full time evolution on the array.",
+    }
+    assert inst_config == SinglequditFullInstruction.config_dict()
+
+    # also spins of same length
+    job_payload = {
+        "experiment_0": {
+            "instructions": [
+                ["load", [0], [50]],
+                [
+                    "sq_full",
+                    [
+                        0,
+                    ],
+                    [np.pi, 0, 0],
+                ],
+                ["measure", [0], []],
+            ],
+            "num_wires": 1,
+            "shots": 5,
+            "wire_order": "sequential",
+        }
+    }
+
+    job_id = "2"
+    data = run_json_circuit(job_payload, job_id, sq_spooler)
+    shots_array = data["results"][0]["data"]["memory"]
+    assert shots_array[0] == "50", "job result got messed up"
+    assert data["job_id"] == job_id, "job_id got messed up"
+    assert len(shots_array) > 0, "shots_array got messed up"
+
+    # are the instructions in ?
+    assert len(data["results"][0]["data"]["instructions"]) == 3
+
+
+def test_spooler_config(sqooler_setup_teardown: Callable) -> None:
     """
     Test that the back-end is properly configured and we can indeed provide those parameters
      as we would like.
     """
     sq_config_dict = {
         "description": "Setup of a cold atomic gas experiment with a single qudit.",
-        "version": "0.2",
+        "version": "0.3",
         "cold_atom_type": "spin",
         "gates": [
             {
                 "name": "rlx",
                 "parameters": ["omega"],
                 "qasm_def": "gate lrx(omega) {}",
-                "coupling_map": [[0], [1], [2], [3], [4]],
+                "coupling_map": [[0]],
                 "description": "Evolution under Lx",
             },
             {
                 "name": "rlz",
                 "parameters": ["delta"],
                 "qasm_def": "gate rlz(delta) {}",
-                "coupling_map": [[0], [1], [2], [3], [4]],
+                "coupling_map": [[0]],
                 "description": "Evolution under the Z gate",
             },
             {
                 "name": "rlz2",
                 "parameters": ["chi"],
                 "qasm_def": "gate rlz2(chi) {}",
-                "coupling_map": [[0], [1], [2], [3], [4]],
+                "coupling_map": [[0]],
                 "description": "Evolution under lz2",
+            },
+            {
+                "coupling_map": [[0]],
+                "description": "Apply the full time evolution on the array.",
+                "name": "sq_full",
+                "parameters": ["omega, delta, chi"],
+                "qasm_def": "gate sq_full(omega, delta, chi) {}",
             },
         ],
         "max_experiments": 1000,
         "max_shots": 1000000,
         "simulator": True,
-        "supported_instructions": ["rlx", "rlz", "rlz2", "barrier", "measure", "load"],
+        "supported_instructions": [
+            "rlx",
+            "rlz",
+            "rlz2",
+            "barrier",
+            "measure",
+            "load",
+            "sq_full",
+        ],
         "num_wires": 1,
         "wire_order": "interleaved",
         "num_species": 1,
-        "display_name": "",
+        "display_name": "singlequdit",
         "operational": True,
         "pending_jobs": None,
         "status_msg": None,

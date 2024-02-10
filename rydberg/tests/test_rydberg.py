@@ -303,6 +303,8 @@ def test_z_gate() -> None:
     shots_array = data["results"][0]["data"]["memory"]
     assert data["job_id"] == job_id, "job_id got messed up"
     assert len(shots_array) > 0, "shots_array got messed up"
+    # are the instructions in ?
+    assert len(data["results"][0]["data"]["instructions"]) == 2
 
     # test the config
     inst_config = {

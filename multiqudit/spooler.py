@@ -9,7 +9,7 @@ from scipy.sparse import identity, diags, csc_matrix
 from scipy import sparse
 from scipy.sparse.linalg import expm_multiply
 
-from sqooler.spoolers import create_memory_data
+from sqooler.spoolers import create_memory_data, gate_dict_from_list
 from sqooler.schemes import ExperimentDict
 
 
@@ -47,16 +47,18 @@ def gen_circuit(json_dict: dict) -> ExperimentDict:
     json_dict: The list of instructions for the specific run.
     """
     exp_name = next(iter(json_dict))
-    ins_list = json_dict[next(iter(json_dict))]["instructions"]
     n_shots = json_dict[next(iter(json_dict))]["shots"]
     n_wires = json_dict[next(iter(json_dict))]["num_wires"]
+    raw_ins_list = json_dict[next(iter(json_dict))]["instructions"]
+    ins_list = [gate_dict_from_list(instr) for instr in raw_ins_list]
+
     spin_per_wire = 1 / 2 * np.ones(n_wires)
     if "seed" in json_dict[next(iter(json_dict))]:
         np.random.seed(json_dict[next(iter(json_dict))]["seed"])
 
     for ins in ins_list:
-        if ins[0] == "load":
-            spin_per_wire[ins[1][0]] = 1 / 2 * ins[2][0]
+        if ins.name == "load":
+            spin_per_wire[ins.wires[0]] = 1 / 2 * ins.params[0]
 
     dim_per_wire = 2 * spin_per_wire + np.ones(n_wires)
     dim_per_wire = dim_per_wire.astype(int)
@@ -137,36 +139,36 @@ def gen_circuit(json_dict: dict) -> ExperimentDict:
     measurement_indices = []
     shots_array = []
     for inst in ins_list:
-        if inst[0] == "rlx":
-            position = inst[1][0]
-            theta = inst[2][0]
+        if inst.name == "rlx":
+            position = inst.wires[0]
+            theta = inst.params[0]
             psi = expm_multiply(-1j * theta * lx_list[position], psi)
-        if inst[0] == "rly":
-            position = inst[1][0]
-            theta = inst[2][0]
+        if inst.name == "rly":
+            position = inst.wires[0]
+            theta = inst.params[0]
             psi = expm_multiply(-1j * theta * ly_list[position], psi)
-        if inst[0] == "rlz":
-            position = inst[1][0]
-            theta = inst[2][0]
+        if inst.name == "rlz":
+            position = inst.wires[0]
+            theta = inst.params[0]
             psi = expm_multiply(-1j * theta * lz_list[position], psi)
-        if inst[0] == "rlz2":
-            position = inst[1][0]
-            theta = inst[2][0]
+        if inst.name == "rlz2":
+            position = inst.wires[0]
+            theta = inst.params[0]
             psi = expm_multiply(-1j * theta * lz2_list[position], psi)
-        if inst[0] == "rlxly":
+        if inst.name == "rlxly":
             # apply gate on two qudits
-            if len(inst[1]) == 2:
-                position1 = inst[1][0]
-                position2 = inst[1][1]
-                theta = inst[2][0]
+            if len(inst.wires) == 2:
+                position1 = inst.wires[0]
+                position2 = inst.wires[1]
+                theta = inst.params[0]
                 lp1 = lx_list[position1] + 1j * ly_list[position1]
                 lp2 = lx_list[position2] + 1j * ly_list[position2]
                 lxly = lp1.dot(lp2.conjugate().T)
                 lxly = lxly + lxly.conjugate().T
                 psi = expm_multiply(-1j * theta * lxly, psi)
             # apply gate on all qudits
-            elif len(inst[1]) == n_wires:
-                theta = inst[2][0]
+            elif len(inst.wires) == n_wires:
+                theta = inst.params[0]
                 lxly = csc_matrix((dim_hilbert, dim_hilbert))
                 for i1 in np.arange(0, n_wires - 1):
                     lp1 = lx_list[i1] + 1j * ly_list[i1]
@@ -174,16 +176,42 @@ def gen_circuit(json_dict: dict) -> ExperimentDict:
                     lxly = lxly + lp1.dot(lp2.conjugate().T)
                 lxly = lxly + lxly.conjugate().T
                 psi = expm_multiply(-1j * theta * lxly, psi)
-        if inst[0] == "rlzlz":
+        if inst.name == "rlzlz":
             # apply gate on two quadits
-            if len(inst[1]) == 2:
-                position1 = inst[1][0]
-                position2 = inst[1][1]
-                theta = inst[2][0]
+            if len(inst.wires) == 2:
+                position1 = inst.wires[0]
+                position2 = inst.wires[1]
+                theta = inst.params[0]
                 lzlz = lz_list[position1].dot(lz_list[position2])
                 psi = expm_multiply(-1j * theta * lzlz, psi)
-        if inst[0] == "measure":
-            measurement_indices.append(inst[1][0])
+        if inst.name == "multiqudit_full":
+            omega, delta, chi, jxy, jzz = inst.params
+            u_full = csc_matrix((dim_hilbert, dim_hilbert))
+            # first the RX
+            for lxi in lx_list:
+                u_full = u_full + omega * lxi
+            # next the RZ
+            for lzi in lz_list:
+                u_full = u_full + delta * lzi
+            # next the local squeezing
+            for lz2i in lz2_list:
+                u_full = u_full + chi * lz2i
+            # next the neighboring flip-flop
+            for ii in range(n_wires - 1):
+                position1 = ii
+                position2 = ii + 1
+                lp1 = lx_list[position1] + 1j * ly_list[position1]
+                lp2 = lx_list[position2] + 1j * ly_list[position2]
+                lxly = lp1.dot(lp2.conjugate().T)
+                lxly = lxly + lxly.conjugate().T
+                u_full = u_full + jxy * lxly
+            # next the neighboring zz
+            for ii in range(n_wires - 1):
+                lzlz = lz_list[ii].dot(lz_list[ii + 1])
+                u_full = u_full + jzz * lzlz
+            psi = expm_multiply(-1j * u_full, psi)
+        if inst.name == "measure":
+            measurement_indices.append(inst.wires[0])
     if measurement_indices:
         # the following filters out the results for the indices we prefer.
         probs = np.squeeze(abs(psi.toarray()) ** 2)
@@ -198,5 +226,5 @@ def gen_circuit(json_dict: dict) -> ExperimentDict:
             measurements[i1, :] = observed[measurement_indices]  # type: ignore
         shots_array = measurements.tolist()
 
-    exp_sub_dict = create_memory_data(shots_array, exp_name, n_shots)
+    exp_sub_dict = create_memory_data(shots_array, exp_name, n_shots, ins_list)
     return exp_sub_dict
