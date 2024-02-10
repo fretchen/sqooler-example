@@ -440,6 +440,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#singlequdit.config.SinglequditFullInstruction" class="md-nav__link">
+    <span class="md-ellipsis">
+      SinglequditFullInstruction
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#simulation-code" class="md-nav__link">
     <span class="md-ellipsis">
       Simulation code
@@ -602,6 +611,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#singlequdit.config.SinglequditFullInstruction" class="md-nav__link">
+    <span class="md-ellipsis">
+      SinglequditFullInstruction
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#simulation-code" class="md-nav__link">
     <span class="md-ellipsis">
       Simulation code
@@ -741,25 +759,25 @@ so the indices should be between 0 and N_MAX_WIRES-1</p>
 
             <details class="quote">
               <summary>Source code in <code>singlequdit/config.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">LoadInstruction</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">LoadInstruction</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The load instruction. As each instruction it requires the</span>
 
@@ -920,7 +938,7 @@ so the indices should be between 0 and N_MAX_WIRES-1</p>
     <span class="n">parameters</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;chi&quot;</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Evolution under lz2&quot;</span>
     <span class="c1"># TODO: This should become most likely a type that is then used for the enforcement of the wires.</span>
-    <span class="n">coupling_map</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">]]</span>
+    <span class="n">coupling_map</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]]</span>
     <span class="n">qasm_def</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gate rlz2(chi) </span><span class="si">{}</span><span class="s2">&quot;</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -995,7 +1013,7 @@ so the indices should be between 0 and N_MAX_WIRES-1</p>
           <td>
             <div class="doc-md-description">
               <p>The wire on which the instruction should be applied
-so the indices should be between 0 and N_MAX_WIRES-1</p>
+so the index should be 0</p>
             </div>
           </td>
         </tr>
@@ -1015,29 +1033,29 @@ so the indices should be between 0 and N_MAX_WIRES-1</p>
 
             <details class="quote">
               <summary>Source code in <code>singlequdit/config.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span>
-<span class="normal">133</span>
-<span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span>
-<span class="normal">139</span>
-<span class="normal">140</span>
-<span class="normal">141</span>
-<span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MeasureBarrierInstruction</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">MeasureBarrierInstruction</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The measure and barrier instruction. As each instruction it requires the</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        name: The string to identify the instruction</span>
 <span class="sd">        wires: The wire on which the instruction should be applied</span>
-<span class="sd">            so the indices should be between 0 and N_MAX_WIRES-1</span>
+<span class="sd">            so the index should be 0</span>
 <span class="sd">        params: has to be empty</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1188,7 +1206,7 @@ so the indices should be between 0 and N_MAX_WIRES-1</p>
     <span class="n">parameters</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;omega&quot;</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Evolution under Lx&quot;</span>
     <span class="c1"># TODO: This should become most likely a type that is then used for the enforcement of the wires.</span>
-    <span class="n">coupling_map</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">]]</span>
+    <span class="n">coupling_map</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]]</span>
     <span class="n">qasm_def</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gate lrx(omega) </span><span class="si">{}</span><span class="s2">&quot;</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1332,7 +1350,7 @@ so the indices should be between 0 and N_MAX_WIRES-1</p>
     <span class="n">parameters</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;delta&quot;</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Evolution under the Z gate&quot;</span>
     <span class="c1"># TODO: This should become most likely a type that is then used for the enforcement of the wires.</span>
-    <span class="n">coupling_map</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">]]</span>
+    <span class="n">coupling_map</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]]</span>
     <span class="n">qasm_def</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gate rlz(delta) </span><span class="si">{}</span><span class="s2">&quot;</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -1378,19 +1396,19 @@ so the indices should be between 0 and N_MAX_WIRES-1</p>
 
             <details class="quote">
               <summary>Source code in <code>singlequdit/config.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SingleQuditExperiment</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SingleQuditExperiment</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The class that defines the single qudit experiments</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1403,6 +1421,150 @@ so the indices should be between 0 and N_MAX_WIRES-1</p>
     <span class="n">num_wires</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">instructions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span>
     <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+  </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="singlequdit.config.SinglequditFullInstruction" class="doc doc-heading">
+          <code>SinglequditFullInstruction</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents ">
+          <p class="doc doc-class-bases">
+            Bases: <code><span title="sqooler.schemes.GateInstruction">GateInstruction</span></code></p>
+
+  
+      <p>The evolution under the full Hamiltonian. As each instruction it requires the</p>
+
+
+
+  <p><strong>Attributes:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code><span title="singlequdit.config.SinglequditFullInstruction.name">name</span></code></td>
+          <td>
+                <code><span title="typing.Literal">Literal</span>[&#39;sq_full&#39;]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The string to identify the instruction</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="singlequdit.config.SinglequditFullInstruction.wires">wires</span></code></td>
+          <td>
+                <code><span title="typing_extensions.Annotated">Annotated</span>[<span title="typing.List">List</span>[<span title="typing_extensions.Annotated">Annotated</span>[int, <span title="pydantic.Field">Field</span>(ge=0, le=0)]], <span title="pydantic.Field">Field</span>(min_length=0, max_length=1)]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The wire on which the instruction should be applied
+so the indices should be between 0 and N_MAX_WIRES-1</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="singlequdit.config.SinglequditFullInstruction.params">params</span></code></td>
+          <td>
+                <code><span title="typing_extensions.Annotated">Annotated</span>[<span title="typing.List">List</span>[<span title="typing_extensions.Annotated">Annotated</span>[float, <span title="pydantic.Field">Field</span>(ge=0, le=5000000.0 * <span title="numpy.pi">pi</span>)]], <span title="pydantic.Field">Field</span>(min_length=3, max_length=3)]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Define the parameter for <code>RX</code>, <code>RZ</code>and <code>RZ2</code> in this order</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+            <details class="quote">
+              <summary>Source code in <code>singlequdit/config.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SinglequditFullInstruction</span><span class="p">(</span><span class="n">GateInstruction</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The evolution under the full Hamiltonian. As each instruction it requires the</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        name: The string to identify the instruction</span>
+<span class="sd">        wires: The wire on which the instruction should be applied</span>
+<span class="sd">            so the indices should be between 0 and N_MAX_WIRES-1</span>
+<span class="sd">        params: Define the parameter for `RX`, `RZ`and `RZ2` in this order</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;sq_full&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sq_full&quot;</span>
+    <span class="n">wires</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">List</span><span class="p">[</span><span class="n">Annotated</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">0</span><span class="p">)]],</span> <span class="n">Field</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="n">params</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">List</span><span class="p">[</span><span class="n">Annotated</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">5e6</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)]],</span>
+        <span class="n">Field</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="c1"># a string that is sent over to the config dict and that is necessary for compatibility with QISKIT.</span>
+    <span class="n">parameters</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;omega, delta, chi&quot;</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Apply the full time evolution on the array.&quot;</span>
+    <span class="c1"># TODO: This should become most likely a type that is then used for the enforcement of the wires.</span>
+    <span class="n">coupling_map</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">qasm_def</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gate sq_full(omega, delta, chi) </span><span class="si">{}</span><span class="s2">&quot;</span>
 </code></pre></div></td></tr></table></div>
             </details>
 
@@ -1570,7 +1732,12 @@ json_dict: The list of instructions for the specific run.</p>
 <span class="normal">104</span>
 <span class="normal">105</span>
 <span class="normal">106</span>
-<span class="normal">107</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">gen_circuit</span><span class="p">(</span><span class="n">json_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExperimentDict</span><span class="p">:</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">gen_circuit</span><span class="p">(</span><span class="n">json_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExperimentDict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The function the creates the instructions for the circuit.</span>
 <span class="sd">    json_dict: The list of instructions for the specific run.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1578,11 +1745,13 @@ json_dict: The list of instructions for the specific run.</p>
     <span class="n">exp_name</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))</span>
     <span class="n">ins_list</span> <span class="o">=</span> <span class="n">json_dict</span><span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))][</span><span class="s2">&quot;instructions&quot;</span><span class="p">]</span>
     <span class="n">n_shots</span> <span class="o">=</span> <span class="n">json_dict</span><span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))][</span><span class="s2">&quot;shots&quot;</span><span class="p">]</span>
+    <span class="n">raw_ins_list</span> <span class="o">=</span> <span class="n">json_dict</span><span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))][</span><span class="s2">&quot;instructions&quot;</span><span class="p">]</span>
+    <span class="n">ins_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">gate_dict_from_list</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span> <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">raw_ins_list</span><span class="p">]</span>
+
     <span class="k">if</span> <span class="s2">&quot;seed&quot;</span> <span class="ow">in</span> <span class="n">json_dict</span><span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))]:</span>
         <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">json_dict</span><span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))][</span><span class="s2">&quot;seed&quot;</span><span class="p">])</span>
 
     <span class="n">n_atoms</span> <span class="o">=</span> <span class="mi">1</span>
-
     <span class="n">spin_len</span> <span class="o">=</span> <span class="n">n_atoms</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># spin length</span>
 
     <span class="c1"># let&#39;s put together spin matrices</span>
@@ -1612,8 +1781,8 @@ json_dict: The list of instructions for the specific run.</p>
     <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">ins_list</span><span class="p">:</span>
         <span class="c1"># this must always be the first instruction. Otherwise we should</span>
         <span class="c1"># raise some error</span>
-        <span class="k">if</span> <span class="n">inst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;load&quot;</span><span class="p">:</span>
-            <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inst</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;load&quot;</span><span class="p">:</span>
+            <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="n">spin_len</span> <span class="o">=</span> <span class="n">n_atoms</span> <span class="o">/</span> <span class="mi">2</span>
             <span class="c1"># length of the qudit</span>
             <span class="n">dim_qudit</span> <span class="o">=</span> <span class="n">n_atoms</span> <span class="o">+</span> <span class="mi">1</span>
@@ -1647,21 +1816,24 @@ json_dict: The list of instructions for the specific run.</p>
             <span class="n">psi</span> <span class="o">=</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">dim_qudit</span><span class="p">)</span>
             <span class="n">psi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mi">0</span>
 
-        <span class="k">if</span> <span class="n">inst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;rlx&quot;</span><span class="p">:</span>
-            <span class="n">theta</span> <span class="o">=</span> <span class="n">inst</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;rlx&quot;</span><span class="p">:</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">psi</span> <span class="o">=</span> <span class="n">expm_multiply</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">lx</span><span class="p">,</span> <span class="n">psi</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">inst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;rlz&quot;</span><span class="p">:</span>
-            <span class="n">theta</span> <span class="o">=</span> <span class="n">inst</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;rlz&quot;</span><span class="p">:</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">psi</span> <span class="o">=</span> <span class="n">expm_multiply</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">lz</span><span class="p">,</span> <span class="n">psi</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">inst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;rlz2&quot;</span><span class="p">:</span>
-            <span class="n">theta</span> <span class="o">=</span> <span class="n">inst</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;rlz2&quot;</span><span class="p">:</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">psi</span> <span class="o">=</span> <span class="n">expm_multiply</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">lz2</span><span class="p">,</span> <span class="n">psi</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">inst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;measure&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;sq_full&quot;</span><span class="p">:</span>
+            <span class="n">omega</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">chi</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">params</span>
+            <span class="n">h_full</span> <span class="o">=</span> <span class="n">omega</span> <span class="o">*</span> <span class="n">lx</span> <span class="o">+</span> <span class="n">delta</span> <span class="o">*</span> <span class="n">lz</span> <span class="o">+</span> <span class="n">chi</span> <span class="o">*</span> <span class="n">lz2</span>
+            <span class="n">psi</span> <span class="o">=</span> <span class="n">expm_multiply</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">h_full</span><span class="p">,</span> <span class="n">psi</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;measure&quot;</span><span class="p">:</span>
             <span class="n">probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">dim_qudit</span><span class="p">),</span> <span class="n">p</span><span class="o">=</span><span class="n">probs</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_shots</span><span class="p">)</span>
-
     <span class="n">shots_array</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-    <span class="n">exp_sub_dict</span> <span class="o">=</span> <span class="n">create_memory_data</span><span class="p">(</span><span class="n">shots_array</span><span class="p">,</span> <span class="n">exp_name</span><span class="p">,</span> <span class="n">n_shots</span><span class="p">)</span>
+    <span class="n">exp_sub_dict</span> <span class="o">=</span> <span class="n">create_memory_data</span><span class="p">(</span><span class="n">shots_array</span><span class="p">,</span> <span class="n">exp_name</span><span class="p">,</span> <span class="n">n_shots</span><span class="p">,</span> <span class="n">ins_list</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">exp_sub_dict</span>
 </code></pre></div></td></tr></table></div>
           </details>
