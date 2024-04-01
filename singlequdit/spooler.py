@@ -9,7 +9,7 @@ from scipy.sparse.linalg import expm_multiply
 from scipy.sparse import diags, csc_matrix
 
 from sqooler.schemes import ExperimentDict, ExperimentalInputDict
-from sqooler.spoolers import create_memory_data, gate_dict_from_list
+from sqooler.spoolers import create_memory_data
 
 
 def gen_circuit(exp_name: str, json_dict: ExperimentalInputDict) -> ExperimentDict:

@@ -9,7 +9,6 @@ import pytest
 
 from pydantic import ValidationError
 
-from sqooler.schemes import get_init_status
 from sqooler.spoolers import gate_dict_from_list
 from sqooler.utils import run_json_circuit
 from multiqudit.config import (
@@ -575,10 +574,7 @@ def test_add_job() -> None:
     }
 
     job_id = "1"
-
-    status_msg_dict = get_init_status()
-    status_msg_dict.job_id = job_id
-    result_dict, status_msg_dict = mq_spooler.add_job(job_payload, job_id)
+    result_dict, _ = mq_spooler.add_job(job_payload, job_id)
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "1"
     for element in result_dict.results[  # pylint: disable=unsubscriptable-object

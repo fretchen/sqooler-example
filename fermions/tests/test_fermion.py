@@ -7,7 +7,6 @@ import numpy as np
 import pytest
 from pydantic import ValidationError
 
-from sqooler.schemes import get_init_status
 from sqooler.spoolers import gate_dict_from_list
 
 from sqooler.utils import run_json_circuit

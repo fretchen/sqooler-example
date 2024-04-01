@@ -9,7 +9,6 @@ from pydantic import ValidationError
 
 import numpy as np
 
-from sqooler.schemes import get_init_status
 from sqooler.spoolers import gate_dict_from_list
 from sqooler.utils import run_json_circuit
 
@@ -287,7 +286,7 @@ def test_check_json_dict() -> None:
     }
     # the wire order is missing
     with pytest.raises(KeyError):
-        _, json_is_fine = sq_spooler.check_json_dict(job_payload)
+        _, json_is_fine, _ = sq_spooler.check_json_dict(job_payload)
 
     job_payload = {
         "experiment_0": {
@@ -309,7 +308,7 @@ def test_check_json_dict() -> None:
             "wire_order": "interleaved",
         },
     }
-    err_msg, json_is_fine, _ = sq_spooler.check_json_dict(job_payload)
+    _, json_is_fine, _ = sq_spooler.check_json_dict(job_payload)
     assert json_is_fine
 
 
@@ -545,9 +544,7 @@ def test_add_job() -> None:
     }
 
     job_id = "1"
-    status_msg_dict = get_init_status()
-    status_msg_dict.job_id = job_id
-    result_dict, status_msg_dict = sq_spooler.add_job(job_payload, job_id)
+    result_dict, _ = sq_spooler.add_job(job_payload, job_id)
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "1"
     for element in result_dict.results[  # pylint: disable=unsubscriptable-object
