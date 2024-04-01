@@ -10,7 +10,7 @@ from scipy import sparse
 from scipy.sparse.linalg import expm_multiply
 
 from sqooler.spoolers import create_memory_data, gate_dict_from_list
-from sqooler.schemes import ExperimentDict
+from sqooler.schemes import ExperimentDict, ExperimentalInputDict
 
 
 def op_at_wire(op: csc_matrix, pos: int, dim_per_wire: List[int]) -> csc_matrix:
@@ -41,20 +41,18 @@ def op_at_wire(op: csc_matrix, pos: int, dim_per_wire: List[int]) -> csc_matrix:
     return res
 
 
-def gen_circuit(json_dict: dict) -> ExperimentDict:
+def gen_circuit(exp_name: str, json_dict: ExperimentalInputDict) -> ExperimentDict:
     """The function the creates the instructions for the circuit.
-
     json_dict: The list of instructions for the specific run.
     """
-    exp_name = next(iter(json_dict))
-    n_shots = json_dict[next(iter(json_dict))]["shots"]
-    n_wires = json_dict[next(iter(json_dict))]["num_wires"]
-    raw_ins_list = json_dict[next(iter(json_dict))]["instructions"]
-    ins_list = [gate_dict_from_list(instr) for instr in raw_ins_list]
+    # pylint: disable=R0914
+    ins_list = json_dict.instructions
+    n_shots = json_dict.shots
+    if json_dict.seed is not None:
+        np.random.seed(json_dict.seed)
 
+    n_wires = json_dict.num_wires
     spin_per_wire = 1 / 2 * np.ones(n_wires)
-    if "seed" in json_dict[next(iter(json_dict))]:
-        np.random.seed(json_dict[next(iter(json_dict))]["seed"])
 
     for ins in ins_list:
         if ins.name == "load":
