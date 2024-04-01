@@ -8,20 +8,17 @@ import numpy as np
 from scipy.sparse.linalg import expm_multiply
 from scipy.sparse import diags, csc_matrix
 
-from sqooler.schemes import ExperimentDict
+from sqooler.schemes import ExperimentDict, ExperimentalInputDict
 from sqooler.spoolers import create_memory_data, gate_dict_from_list
 
 
-def gen_circuit(json_dict: dict) -> ExperimentDict:
+def gen_circuit(exp_name: str, json_dict: ExperimentalInputDict) -> ExperimentDict:
     """The function the creates the instructions for the circuit.
     json_dict: The list of instructions for the specific run.
     """
     # pylint: disable=R0914
-    exp_name = next(iter(json_dict))
-    ins_list = json_dict[next(iter(json_dict))]["instructions"]
-    n_shots = json_dict[next(iter(json_dict))]["shots"]
-    raw_ins_list = json_dict[next(iter(json_dict))]["instructions"]
-    ins_list = [gate_dict_from_list(instr) for instr in raw_ins_list]
+    ins_list = json_dict.instructions
+    n_shots = json_dict.shots
 
     if "seed" in json_dict[next(iter(json_dict))]:
         np.random.seed(json_dict[next(iter(json_dict))]["seed"])
