@@ -19,9 +19,8 @@ def gen_circuit(exp_name: str, json_dict: ExperimentalInputDict) -> ExperimentDi
     # pylint: disable=R0914
     ins_list = json_dict.instructions
     n_shots = json_dict.shots
-
-    if "seed" in json_dict[next(iter(json_dict))]:
-        np.random.seed(json_dict[next(iter(json_dict))]["seed"])
+    if json_dict.seed is not None:
+        np.random.seed(json_dict.seed)
 
     n_atoms = 1
     spin_len = n_atoms / 2  # spin length

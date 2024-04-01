@@ -64,7 +64,7 @@ def test_pydantic_exp_validation() -> None:
             ],
             "num_wires": 2,
             "shots": 4,
-            "wire_order": "sequential",
+            "wire_order": "interleaved",
         }
         SingleQuditExperiment(**poor_experiment)
 
@@ -79,7 +79,7 @@ def test_pydantic_exp_validation() -> None:
             ],
             "num_wires": 1,
             "shots": 1e7,
-            "wire_order": "sequential",
+            "wire_order": "interleaved",
         }
         SingleQuditExperiment(**poor_experiment)
 
@@ -136,7 +136,7 @@ def test_load_instruction(sqooler_setup_teardown: Callable) -> None:
             ],
             "num_wires": 1,
             "shots": n_shots,
-            "wire_order": "sequential",
+            "wire_order": "interleaved",
         }
     }
     job_id = "2"
@@ -274,7 +274,7 @@ def test_check_json_dict() -> None:
             ],
             "num_wires": 1,
             "shots": 3,
-            "wire_order": "sequential",
+            "wire_order": "interleaved",
         },
         "experiment_1": {
             "instructions": [
@@ -285,7 +285,31 @@ def test_check_json_dict() -> None:
             "shots": 3,
         },
     }
-    _, json_is_fine = sq_spooler.check_json_dict(job_payload)
+    # the wire order is missing
+    with pytest.raises(KeyError):
+        _, json_is_fine = sq_spooler.check_json_dict(job_payload)
+
+    job_payload = {
+        "experiment_0": {
+            "instructions": [
+                ["rlz", [0], [0.7]],
+                ["measure", [0], []],
+            ],
+            "num_wires": 1,
+            "shots": 3,
+            "wire_order": "interleaved",
+        },
+        "experiment_1": {
+            "instructions": [
+                ["rlz", [0], [0.7]],
+                ["measure", [0], []],
+            ],
+            "num_wires": 1,
+            "shots": 3,
+            "wire_order": "interleaved",
+        },
+    }
+    err_msg, json_is_fine, _ = sq_spooler.check_json_dict(job_payload)
     assert json_is_fine
 
 
@@ -303,7 +327,7 @@ def test_z_gate() -> None:
             ],
             "num_wires": 1,
             "shots": 3,
-            "wire_order": "sequential",
+            "wire_order": "interleaved",
         },
         "experiment_1": {
             "instructions": [
@@ -312,6 +336,7 @@ def test_z_gate() -> None:
             ],
             "num_wires": 1,
             "shots": 3,
+            "wire_order": "interleaved",
         },
     }
 
@@ -386,7 +411,7 @@ def test_rydberg_full_instruction() -> None:
             ],
             "num_wires": 1,
             "shots": 5,
-            "wire_order": "sequential",
+            "wire_order": "interleaved",
         }
     }
 
@@ -459,6 +484,8 @@ def test_spooler_config(sqooler_setup_teardown: Callable) -> None:
         "operational": True,
         "pending_jobs": None,
         "status_msg": None,
+        "last_queue_check": None,
+        "sign": False,
     }
     spooler_config_info = sq_spooler.get_configuration()
     assert spooler_config_info.model_dump() == sq_config_dict
@@ -478,7 +505,7 @@ def test_number_experiments() -> None:
         ],
         "num_wires": 1,
         "shots": 3,
-        "wire_order": "sequential",
+        "wire_order": "interleaved",
     }
     job_payload = {"experiment_0": inst_dict}
     job_id = "1"
@@ -520,7 +547,7 @@ def test_add_job() -> None:
     job_id = "1"
     status_msg_dict = get_init_status()
     status_msg_dict.job_id = job_id
-    result_dict, status_msg_dict = sq_spooler.add_job(job_payload, status_msg_dict)
+    result_dict, status_msg_dict = sq_spooler.add_job(job_payload, job_id)
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "1"
     for element in result_dict.results[  # pylint: disable=unsubscriptable-object
