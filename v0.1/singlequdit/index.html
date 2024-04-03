@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.12">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.7e359304.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.bcfcd587.min.css">
       
       
 
@@ -1626,7 +1626,7 @@ in the <code>conf.py</code> file.</p>
 
 
 <h2 id="singlequdit.spooler.gen_circuit" class="doc doc-heading">
-          <code class="highlight language-python"><span class="n">gen_circuit</span><span class="p">(</span><span class="n">json_dict</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">gen_circuit</span><span class="p">(</span><span class="n">exp_name</span><span class="p">,</span> <span class="n">json_dict</span><span class="p">)</span></code>
 
 </h2>
 
@@ -1731,23 +1731,15 @@ json_dict: The list of instructions for the specific run.</p>
 <span class="normal">105</span>
 <span class="normal">106</span>
 <span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">gen_circuit</span><span class="p">(</span><span class="n">json_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExperimentDict</span><span class="p">:</span>
+<span class="normal">108</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">gen_circuit</span><span class="p">(</span><span class="n">exp_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">json_dict</span><span class="p">:</span> <span class="n">ExperimentalInputDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExperimentDict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The function the creates the instructions for the circuit.</span>
 <span class="sd">    json_dict: The list of instructions for the specific run.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=R0914</span>
-    <span class="n">exp_name</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))</span>
-    <span class="n">ins_list</span> <span class="o">=</span> <span class="n">json_dict</span><span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))][</span><span class="s2">&quot;instructions&quot;</span><span class="p">]</span>
-    <span class="n">n_shots</span> <span class="o">=</span> <span class="n">json_dict</span><span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))][</span><span class="s2">&quot;shots&quot;</span><span class="p">]</span>
-    <span class="n">raw_ins_list</span> <span class="o">=</span> <span class="n">json_dict</span><span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))][</span><span class="s2">&quot;instructions&quot;</span><span class="p">]</span>
-    <span class="n">ins_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">gate_dict_from_list</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span> <span class="k">for</span> <span class="n">instr</span> <span class="ow">in</span> <span class="n">raw_ins_list</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="s2">&quot;seed&quot;</span> <span class="ow">in</span> <span class="n">json_dict</span><span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))]:</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">json_dict</span><span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">json_dict</span><span class="p">))][</span><span class="s2">&quot;seed&quot;</span><span class="p">])</span>
+    <span class="n">ins_list</span> <span class="o">=</span> <span class="n">json_dict</span><span class="o">.</span><span class="n">instructions</span>
+    <span class="n">n_shots</span> <span class="o">=</span> <span class="n">json_dict</span><span class="o">.</span><span class="n">shots</span>
+    <span class="k">if</span> <span class="n">json_dict</span><span class="o">.</span><span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">json_dict</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
 
     <span class="n">n_atoms</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">spin_len</span> <span class="o">=</span> <span class="n">n_atoms</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># spin length</span>
@@ -1988,7 +1980,7 @@ json_dict: The list of instructions for the specific run.</p>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "navigation.footer", "toc.follow"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.c8d2eff1.min.js"></script>
+      <script src="../assets/javascripts/bundle.1e8ae164.min.js"></script>
       
     
   </body>
