@@ -7,7 +7,6 @@ import numpy as np
 import pytest
 from pydantic import ValidationError
 
-from sqooler.schemes import get_init_status
 from sqooler.spoolers import gate_dict_from_list
 
 from sqooler.utils import run_json_circuit
@@ -520,6 +519,8 @@ def test_spooler_config() -> None:
         "operational": True,
         "pending_jobs": None,
         "status_msg": None,
+        "last_queue_check": None,
+        "sign": False,
     }
     spooler_config_info = f_spooler.get_configuration()
     assert spooler_config_info.model_dump() == fermion_config_dict
@@ -548,10 +549,8 @@ def test_add_job() -> None:
     }
 
     job_id = "1"
-    status_msg_dict = get_init_status()
-    status_msg_dict.job_id = job_id
 
-    result_dict, status_msg_dict = f_spooler.add_job(job_payload, status_msg_dict)
+    result_dict, status_msg_dict = f_spooler.add_job(job_payload, job_id)
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "1 0"
     for element in result_dict.results[  # pylint: disable=unsubscriptable-object
@@ -560,3 +559,5 @@ def test_add_job() -> None:
         assert (
             element == expected_value
         ), f"Element {element} is not equal to {expected_value}"
+
+    assert status_msg_dict.status == "DONE", "Status message is not 'DONE'"

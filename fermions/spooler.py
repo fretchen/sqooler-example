@@ -6,7 +6,7 @@ import numpy as np
 from scipy.sparse.linalg import expm
 
 
-from sqooler.schemes import ExperimentDict
+from sqooler.schemes import ExperimentDict, ExperimentalInputDict
 from sqooler.spoolers import create_memory_data
 
 
@@ -51,16 +51,15 @@ def jordan_wigner_transform(j: int, lattice_length: int) -> np.ndarray:
     return nested_kronecker_product(operators)
 
 
-def gen_circuit(json_dict: dict) -> ExperimentDict:
+def gen_circuit(exp_name: str, json_dict: ExperimentalInputDict) -> ExperimentDict:
     """The function the creates the instructions for the circuit.
 
     json_dict: The list of instructions for the specific run.
     """
-    exp_name = next(iter(json_dict))
-    ins_list = json_dict[next(iter(json_dict))]["instructions"]
-    n_shots = json_dict[next(iter(json_dict))]["shots"]
-    if "seed" in json_dict[next(iter(json_dict))]:
-        np.random.seed(json_dict[next(iter(json_dict))]["seed"])
+    ins_list = json_dict.instructions
+    n_shots = json_dict.shots
+    if json_dict.seed is not None:
+        np.random.seed(json_dict.seed)
     tweezer_len = 4  # length of the tweezer array
     n_states = 2 ** (2 * tweezer_len)
 
@@ -89,14 +88,14 @@ def gen_circuit(json_dict: dict) -> ExperimentDict:
     # Fix this pylint issue whenever you have time, but be careful !
     for i in range(len(ins_list)):
         inst = ins_list[i]
-        if inst[0] == "load":
-            latt_ind = inst[1][0]
+        if inst.name == "load":
+            latt_ind = inst.wires[0]
             psi = np.dot(lowering_op_list[latt_ind].T, psi)
-        if inst[0] == "fhop":
+        if inst.name == "fhop":
             # the first two indices are the starting points
             # the other two indices are the end points
-            latt_ind = inst[1]
-            theta = inst[2][0]
+            latt_ind = inst.wires
+            theta = inst.params[0]
             # couple
             h_hop = lowering_op_list[latt_ind[0]].T.dot(lowering_op_list[latt_ind[2]])
             h_hop += lowering_op_list[latt_ind[2]].T.dot(lowering_op_list[latt_ind[0]])
@@ -104,24 +103,23 @@ def gen_circuit(json_dict: dict) -> ExperimentDict:
             h_hop += lowering_op_list[latt_ind[3]].T.dot(lowering_op_list[latt_ind[1]])
             u_hop = expm(-1j * theta * h_hop)
             psi = np.dot(u_hop, psi)
-        if inst[0] == "fint":
+        if inst.name == "fint":
             # the first two indices are the starting points
             # the other two indices are the end points
-            theta = inst[2][0]
+            theta = inst.params[0]
             u_int = expm(-1j * theta * h_int)
-            # theta = inst[2][0]
             psi = np.dot(u_int, psi)
-        if inst[0] == "fphase":
+        if inst.name == "fphase":
             # the first two indices are the starting points
             # the other two indices are the end points
             h_phase = 0 * number_operators[0]
-            for ii in inst[1]:  # np.arange(len(inst[1])):
+            for ii in inst.wires:
                 h_phase += number_operators[ii]
-            theta = inst[2][0]
+            theta = inst.params[0]
             u_phase = expm(-1j * theta * h_phase)
             psi = np.dot(u_phase, psi)
-        if inst[0] == "measure":
-            measurement_indices.append(inst[1][0])
+        if inst.name == "measure":
+            measurement_indices.append(inst.wires[0])
 
     # only give back the needed measurments
     if measurement_indices:
@@ -139,6 +137,5 @@ def gen_circuit(json_dict: dict) -> ExperimentDict:
                 measurements[jj, ii] = int(observed)
         shots_array = measurements.tolist()
 
-    # print("done calc")
     exp_sub_dict = create_memory_data(shots_array, exp_name, n_shots)
     return exp_sub_dict

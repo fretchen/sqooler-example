@@ -7,7 +7,6 @@ import pytest
 
 from pydantic import ValidationError
 
-from sqooler.schemes import get_init_status
 from sqooler.spoolers import gate_dict_from_list
 from sqooler.utils import run_json_circuit
 from rydberg.config import (
@@ -286,6 +285,7 @@ def test_z_gate() -> None:
             ],
             "num_wires": 1,
             "shots": 3,
+            "wire_order": "sequential",
         },
         "experiment_1": {
             "instructions": [
@@ -294,6 +294,7 @@ def test_z_gate() -> None:
             ],
             "num_wires": 1,
             "shots": 3,
+            "wire_order": "sequential",
         },
     }
 
@@ -431,6 +432,8 @@ def test_spooler_config() -> None:
         "operational": True,
         "pending_jobs": None,
         "status_msg": None,
+        "last_queue_check": None,
+        "sign": False,
     }
     spooler_config_info = ryd_spooler.get_configuration()
     assert spooler_config_info.model_dump() == mq_config_dict
@@ -504,9 +507,7 @@ def test_add_job() -> None:
 
     job_id = "1"
 
-    status_msg_dict = get_init_status()
-    status_msg_dict.job_id = job_id
-    result_dict, status_msg_dict = ryd_spooler.add_job(job_payload, status_msg_dict)
+    result_dict, _ = ryd_spooler.add_job(job_payload, job_id)
     # assert that all the elements in the result dict memory are of string '1 0'
     expected_value = "1 0"
     for element in result_dict.results[  # pylint: disable=unsubscriptable-object
