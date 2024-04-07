@@ -841,13 +841,13 @@ files = [
 
 [[package]]
 name = "mkdocstrings"
-version = "0.24.2"
+version = "0.24.3"
 description = "Automatic documentation from sources, for MkDocs."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "mkdocstrings-0.24.2-py3-none-any.whl", hash = "sha256:61440b77542170238099a7d87882c3417897771950e3aafe6e22abff3d1c51fb"},
-    {file = "mkdocstrings-0.24.2.tar.gz", hash = "sha256:b91b9cdd9490ef2e8957000bff1d34a4b308b9cd57b10f26169f085def4c6a92"},
+    {file = "mkdocstrings-0.24.3-py3-none-any.whl", hash = "sha256:5c9cf2a32958cd161d5428699b79c8b0988856b0d4a8c5baf8395fc1bf4087c3"},
+    {file = "mkdocstrings-0.24.3.tar.gz", hash = "sha256:f327b234eb8d2551a306735436e157d0a22d45f79963c60a8b585d5f7a94c1d2"},
 ]
 
 [package.dependencies]
@@ -1705,19 +1705,23 @@ name = "sqooler"
 version = "0.6.1"
 description = "Code that enables validated cloud access to quantum hardware (simulators)"
 optional = false
-python-versions = "<4.0,>=3.10"
-files = [
-    {file = "sqooler-0.6.1-py3-none-any.whl", hash = "sha256:5a069558cc9852b21a2491028effc3149d395657a6cfb0789707ce1b1d67adea"},
-    {file = "sqooler-0.6.1.tar.gz", hash = "sha256:cee9ac6d9390967d4d798947fd1127c697554d709d63b6797ac3ed962a6e7c70"},
-]
+python-versions = "^3.10"
+files = []
+develop = false
 
 [package.dependencies]
-cryptography = ">=42.0.5,<43.0.0"
-dropbox = ">=11.36.2,<12.0.0"
-pydantic = ">=2.3.0,<3.0.0"
-pymongo = ">=4.3.3,<5.0.0"
-regex = ">=2023.6.3,<2024.0.0"
-setuptools = ">=69.0.3,<70.0.0"
+cryptography = "^42.0.5"
+dropbox = "^11.36.2"
+pydantic = "^2.3.0"
+pymongo = "^4.3.3"
+regex = "^2023.6.3"
+setuptools = "^69.0.3"
+
+[package.source]
+type = "git"
+url = "https://github.com/Alqor-UG/sqooler.git"
+reference = "HEAD"
+resolved_reference = "2bfe269484275217c309a887d47ad5bc0e901399"
 
 [[package]]
 name = "stone"
@@ -1758,13 +1762,13 @@ files = [
 
 [[package]]
 name = "typing-extensions"
-version = "4.10.0"
+version = "4.11.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "typing_extensions-4.10.0-py3-none-any.whl", hash = "sha256:69b1a937c3a517342112fb4c6df7e72fc39a38e7891a5730ed4985b5214b5475"},
-    {file = "typing_extensions-4.10.0.tar.gz", hash = "sha256:b0abd7c89e8fb96f98db18d86106ff1d90ab692004eb746cf6eda2682f91b3cb"},
+    {file = "typing_extensions-4.11.0-py3-none-any.whl", hash = "sha256:c1f94d72897edaf4ce775bb7558d5b79d8126906a14ea5ed1635921406c0387a"},
+    {file = "typing_extensions-4.11.0.tar.gz", hash = "sha256:83f085bd5ca59c80295fc2a82ab5dac679cbe02b9f33f7d83af68e241bea51b0"},
 ]
 
 [[package]]
@@ -1877,4 +1881,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "f85dd89da34df11cb2a6169f2acb59f2b6b30449c9afa9c4618f6f4fcd08be26"
+content-hash = "83737658e16d6ca0c0394b4ee35abeb223ab8aeb28718b83d379b4c5d3d39d8d"
