@@ -180,6 +180,7 @@ spooler_object = Spooler(
     cold_atom_type="fermion",
     num_species=2,
     version="0.1",
+    sign=True,
 )
 
 # Now also add the function that generates the circuit
