@@ -19,7 +19,6 @@ from fermions.config import (
     IntInstruction,
     PhaseInstruction,
 )
-from icecream import ic
 
 
 def test_pydantic_exp_validation() -> None:
