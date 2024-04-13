@@ -204,6 +204,7 @@ spooler_object = Spooler(
     description="Setup of a cold atomic gas experiment with a single qudit.",
     n_max_experiments=MAX_EXPERIMENTS,
     n_max_shots=N_MAX_SHOTS,
+    sign=True,
 )
 
 # Now also add the function that generates the circuit

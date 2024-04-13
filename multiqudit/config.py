@@ -320,6 +320,7 @@ spooler_object = MultiQuditSpooler(
     n_max_experiments=MAX_EXPERIMENTS,
     n_max_shots=N_MAX_SHOTS,
     version="0.2",
+    sign=True,
 )
 
 # Now also add the function that generates the circuit
