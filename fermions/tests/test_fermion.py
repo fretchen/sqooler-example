@@ -19,6 +19,7 @@ from fermions.config import (
     IntInstruction,
     PhaseInstruction,
 )
+from icecream import ic
 
 
 def test_pydantic_exp_validation() -> None:
@@ -520,7 +521,7 @@ def test_spooler_config() -> None:
         "pending_jobs": None,
         "status_msg": None,
         "last_queue_check": None,
-        "sign": False,
+        "sign": True,
     }
     spooler_config_info = f_spooler.get_configuration()
     assert spooler_config_info.model_dump() == fermion_config_dict
