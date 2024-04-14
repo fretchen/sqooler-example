@@ -1702,26 +1702,22 @@ files = [
 
 [[package]]
 name = "sqooler"
-version = "0.6.1"
+version = "0.6.2"
 description = "Code that enables validated cloud access to quantum hardware (simulators)"
 optional = false
-python-versions = "^3.10"
-files = []
-develop = false
+python-versions = "<4.0,>=3.10"
+files = [
+    {file = "sqooler-0.6.2-py3-none-any.whl", hash = "sha256:eaec47f918c9e9e933b0062fe824d560bcd72761de7d8b958107724530e83a54"},
+    {file = "sqooler-0.6.2.tar.gz", hash = "sha256:51c0a1d500e8d2ef97cbf008d9f71b59959d7ccd7cd2bd67297dd6176d4db524"},
+]
 
 [package.dependencies]
-cryptography = "^42.0.5"
-dropbox = "^11.36.2"
-pydantic = "^2.3.0"
-pymongo = "^4.3.3"
-regex = "^2023.6.3"
-setuptools = "^69.0.3"
-
-[package.source]
-type = "git"
-url = "https://github.com/Alqor-UG/sqooler.git"
-reference = "HEAD"
-resolved_reference = "f6e7dff78d2c4fd6a90e7791e84d5ef0f5299127"
+cryptography = ">=42.0.5,<43.0.0"
+dropbox = ">=11.36.2,<12.0.0"
+pydantic = ">=2.3.0,<3.0.0"
+pymongo = ">=4.3.3,<5.0.0"
+regex = ">=2023.6.3,<2024.0.0"
+setuptools = ">=69.0.3,<70.0.0"
 
 [[package]]
 name = "stone"
@@ -1881,4 +1877,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "83737658e16d6ca0c0394b4ee35abeb223ab8aeb28718b83d379b4c5d3d39d8d"
+content-hash = "079c7d175b18ff2435036be03a538db31cbb24f05a7795298d8116089d0fd219"
