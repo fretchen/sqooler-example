@@ -2,6 +2,8 @@
 The module that contains all the necessary logic for processing jobs in the database queue.
 """
 
+import logging
+
 from decouple import config
 
 # import the storage provider that you would like to use
@@ -9,8 +11,6 @@ from decouple import config
 from sqooler.storage_providers.mongodb import MongodbProvider
 from sqooler.schemes import MongodbLoginInformation
 from sqooler.utils import update_backends, main
-
-import logging
 
 from singlequdit.config import spooler_object as sq_spooler
 from multiqudit.config import spooler_object as mq_spooler
