@@ -10,6 +10,8 @@ from sqooler.storage_providers.mongodb import MongodbProvider
 from sqooler.schemes import MongodbLoginInformation
 from sqooler.utils import update_backends, main
 
+import logging
+
 from singlequdit.config import spooler_object as sq_spooler
 from multiqudit.config import spooler_object as mq_spooler
 from fermions.config import spooler_object as f_spooler
@@ -36,7 +38,9 @@ login_dict = {
 mongodb_login = MongodbLoginInformation(**login_dict)
 storage_provider = MongodbProvider(mongodb_login)
 
-print("Update")
+logging.basicConfig(level=logging.INFO)
+
+logging.info("Update")
 update_backends(storage_provider, backends)
-print("Now run as usual.")
+logging.info("Now run as usual.")
 main(storage_provider, backends)
