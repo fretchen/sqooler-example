@@ -17,7 +17,7 @@ sqooler = {git = "https://github.com/Alqor-UG/sqooler.git"}
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.2"
 mypy = "^1.8.0"
-black = "^24.2.0"
+black = "^24.4.2"
 pylint = "^3.1.0"
 pre-commit = "^3.6.0"
 icecream = "^2.1.3"
