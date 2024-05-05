@@ -516,11 +516,11 @@ def test_spooler_config() -> None:
         "wire_order": "interleaved",
         "num_species": 2,
         "display_name": "",
-        "operational": True,
         "pending_jobs": None,
         "status_msg": None,
         "last_queue_check": None,
         "sign": True,
+        "kid": None,
     }
     spooler_config_info = f_spooler.get_configuration()
     assert spooler_config_info.model_dump() == fermion_config_dict
