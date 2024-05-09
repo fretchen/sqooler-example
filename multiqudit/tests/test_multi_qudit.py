@@ -495,11 +495,11 @@ def test_spooler_config(sqooler_setup_teardown: Callable) -> None:
         "wire_order": "interleaved",
         "num_species": 1,
         "display_name": "multiqudit",
-        "operational": True,
         "pending_jobs": None,
         "status_msg": None,
         "last_queue_check": None,
-        "sign": False,
+        "sign": True,
+        "kid": None,
     }
     spooler_config_info = mq_spooler.get_configuration()
     assert spooler_config_info.model_dump() == mq_config_dict

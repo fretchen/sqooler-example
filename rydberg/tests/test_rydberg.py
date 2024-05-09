@@ -429,11 +429,11 @@ def test_spooler_config() -> None:
         "wire_order": "interleaved",
         "num_species": 1,
         "display_name": "",
-        "operational": True,
         "pending_jobs": None,
         "status_msg": None,
         "last_queue_check": None,
-        "sign": False,
+        "sign": True,
+        "kid": None,
     }
     spooler_config_info = ryd_spooler.get_configuration()
     assert spooler_config_info.model_dump() == mq_config_dict
