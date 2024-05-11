@@ -16,6 +16,7 @@ from singlequdit.config import spooler_object as sq_spooler
 from multiqudit.config import spooler_object as mq_spooler
 from fermions.config import spooler_object as f_spooler
 from rydberg.config import spooler_object as ryd_spooler
+
 # configure the backends
 backends = {
     "singlequdit": sq_spooler,
