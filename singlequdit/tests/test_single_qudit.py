@@ -485,6 +485,7 @@ def test_spooler_config(sqooler_setup_teardown: Callable) -> None:
         "last_queue_check": None,
         "sign": True,
         "kid": None,
+        "operational": True,
     }
     spooler_config_info = sq_spooler.get_configuration()
     assert spooler_config_info.model_dump() == sq_config_dict

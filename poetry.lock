@@ -1090,13 +1090,13 @@ files = [
 
 [[package]]
 name = "pre-commit"
-version = "3.7.0"
+version = "3.7.1"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "pre_commit-3.7.0-py2.py3-none-any.whl", hash = "sha256:5eae9e10c2b5ac51577c3452ec0a490455c45a0533f7960f993a0d01e59decab"},
-    {file = "pre_commit-3.7.0.tar.gz", hash = "sha256:e209d61b8acdcf742404408531f0c37d49d2c734fd7cff2d6076083d191cb060"},
+    {file = "pre_commit-3.7.1-py2.py3-none-any.whl", hash = "sha256:fae36fd1d7ad7d6a5a1c0b0d5adb2ed1a3bda5a21bf6c3e5372073d7a11cd4c5"},
+    {file = "pre_commit-3.7.1.tar.gz", hash = "sha256:8ca3ad567bc78a4972a3f1a477e94a79d4597e8140a6e0b651c5e33899c3654a"},
 ]
 
 [package.dependencies]
@@ -1700,20 +1700,24 @@ name = "sqooler"
 version = "0.7.0"
 description = "Code that enables validated cloud access to quantum hardware (simulators)"
 optional = false
-python-versions = "<4.0,>=3.10"
-files = [
-    {file = "sqooler-0.7.0-py3-none-any.whl", hash = "sha256:2e92d71753a41d628ac5efc53d858549bd3894bbb344673a4ff1d3d0d10e81f6"},
-    {file = "sqooler-0.7.0.tar.gz", hash = "sha256:8f96e6887e9c4de7e9fa39c60326d6a7b91466c75718b38caffc270b379e94dc"},
-]
+python-versions = "^3.10"
+files = []
+develop = false
 
 [package.dependencies]
-click = ">=8.1.7,<9.0.0"
-cryptography = ">=42.0.5,<43.0.0"
-dropbox = ">=11.36.2,<12.0.0"
-pydantic = ">=2.3.0,<3.0.0"
-pymongo = ">=4.3.3,<5.0.0"
-regex = ">=2023.6.3,<2024.0.0"
-setuptools = ">=69.0.3,<70.0.0"
+click = "^8.1.7"
+cryptography = "^42.0.5"
+dropbox = "^11.36.2"
+pydantic = "^2.3.0"
+pymongo = "^4.3.3"
+regex = "^2023.6.3"
+setuptools = "^69.0.3"
+
+[package.source]
+type = "git"
+url = "https://github.com/Alqor-UG/sqooler.git"
+reference = "HEAD"
+resolved_reference = "aeeb75302ff7bfb878934c70f8d1d0ed059870cf"
 
 [[package]]
 name = "stone"
@@ -1873,4 +1877,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "b024da50515eb6f91df04d86ed94dfb465df0d8dcd508cd0b187b27f7619ac18"
+content-hash = "83737658e16d6ca0c0394b4ee35abeb223ab8aeb28718b83d379b4c5d3d39d8d"
