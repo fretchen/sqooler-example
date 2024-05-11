@@ -16,7 +16,7 @@ from singlequdit.config import spooler_object as sq_spooler
 from multiqudit.config import spooler_object as mq_spooler
 from fermions.config import spooler_object as f_spooler
 from rydberg.config import spooler_object as ryd_spooler
-
+from icecream import ic
 # configure the backends
 backends = {
     "singlequdit": sq_spooler,
@@ -35,6 +35,7 @@ login_dict = {
     "mongodb_password": mongodb_password,
     "mongodb_database_url": mongodb_database_url,
 }
+ic(login_dict)
 mongodb_login = MongodbLoginInformation(**login_dict)
 storage_provider = MongodbProvider(mongodb_login)
 
